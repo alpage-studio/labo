@@ -1,0 +1,871 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Labo de série</title>
+<meta name="description" content="Un look pour toute la pellicule, une correction propre à chaque photo.">
+<meta name="theme-color" content="#18181a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Labo">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: phone first. Three gestures — import (dock), pick a look (film-strip of live previews), save (dock).
+   Fine-tuning lives in a bottom sheet on phones and a right rail on desktop.
+   Single dark theme on purpose: a neutral grey surround is what you judge colour against. */
+:root{
+  --bg:#18181a; --panel:#202023; --raised:#2a2a2e; --line:#323236;
+  --fg:#ebe8e3; --muted:#9b9893; --accent:#e5a23a; --accent-ink:#1b1408;
+  --ok:#86c79f; --warn:#e3bd62;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Instrument Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+  --dock-h:64px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.45 var(--f-body);margin:0;-webkit-tap-highlight-color:transparent}
+.wrap{padding-inline:16px;max-width:1500px;margin:0 auto}
+button,label.btn{font-family:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:12px;padding-block:10px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand h1{font:700 20px/1 var(--f-display);letter-spacing:-.01em;margin:0;white-space:nowrap}
+.lamp{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px 2px rgba(229,162,58,.55);flex:none}
+.count{color:var(--muted);font:500 12px var(--f-mono);margin-left:auto;white-space:nowrap}
+.top-actions{display:flex;gap:8px}
+
+.btn{appearance:none;border:1px solid var(--line);background:var(--raised);color:var(--fg);font:600 14px var(--f-body);padding:9px 16px;border-radius:9px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;min-height:40px}
+.btn:hover{border-color:#4a4a50}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent}
+.btn.small{padding:6px 12px;min-height:34px;font-size:13px}
+.btn.wide{width:100%}
+.btn.big{padding:14px 22px;font-size:16px;min-height:52px}
+.btn[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* look strip */
+.looks{border-bottom:1px solid var(--line);background:var(--bg)}
+.strip{display:flex;gap:10px;overflow-x:auto;padding:12px 16px 8px;scroll-snap-type:x proximity;scroll-padding-inline:16px;scrollbar-width:thin;max-width:1500px;margin:0 auto}
+.look-item{appearance:none;flex:none;scroll-snap-align:start;width:112px;border:0;background:none;color:var(--fg);padding:0;cursor:pointer;display:flex;flex-direction:column;gap:5px;text-align:left}
+.look-item canvas{width:112px;height:75px;border-radius:7px;display:block;background:#111113;outline:2px solid transparent;outline-offset:2px}
+.look-item[aria-pressed="true"] canvas{outline-color:var(--accent)}
+.look-item span{font:500 12.5px var(--f-body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.look-item[aria-pressed="true"] span{color:var(--accent)}
+.strip-sep{flex:none;writing-mode:vertical-rl;transform:rotate(180deg);font:600 10px var(--f-body);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border-left:1px solid var(--line);padding-left:6px;align-self:stretch;text-align:center}
+.lookdesc{color:var(--muted);font-size:13px;margin:0 auto;padding:0 16px 10px;max-width:1500px;min-height:1.4em}
+
+/* bench */
+.work{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:18px;align-items:start;padding-block:14px 28px}
+.bench{min-width:0;display:flex;flex-direction:column;gap:12px}
+.empty{background:var(--panel);border:1px dashed #44444a;border-radius:14px;padding:22px 20px;display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+.empty.over{border-color:var(--accent);background:#262320}
+.empty h2{font:700 22px/1.15 var(--f-display);margin:0;text-wrap:balance}
+.steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;max-width:60ch}
+.steps b{color:var(--accent);font-weight:600}
+.hint{color:var(--muted);font-size:12.5px;margin:0}
+.bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bar .lbl{color:var(--muted);font-size:13px;margin-right:auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;min-width:0;padding:0;color:inherit;text-align:left;font:inherit}
+.card:hover{border-color:#4a4a50}
+.card.skip{opacity:.4}
+.frame{position:relative;background:#111113;aspect-ratio:3/2;display:flex;align-items:center;justify-content:center;width:100%}
+.frame canvas{max-width:100%;max-height:100%;display:block}
+.tag{position:absolute;top:6px;left:6px;font:500 10px var(--f-mono);background:rgba(0,0,0,.6);padding:2px 5px;border-radius:4px;letter-spacing:.04em}
+.meta{padding:7px 9px 9px;display:flex;flex-direction:column;gap:5px;min-width:0;width:100%}
+.name{font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.notes{display:flex;flex-wrap:wrap;gap:4px}
+.note{font:500 10.5px var(--f-mono);padding:2px 5px;border-radius:4px;background:var(--raised);color:var(--muted)}
+.note.w{color:var(--warn)} .note.ok{color:var(--ok)}
+
+/* rail / sheet */
+.rail{background:var(--panel);border:1px solid var(--line);border-radius:12px;display:flex;flex-direction:column;position:sticky;top:calc(env(safe-area-inset-top,0px) + 76px);max-height:calc(100vh - 96px);overflow:auto}
+.rail > section,.rail > details{padding:14px 16px;border-bottom:1px solid var(--line)}
+.rail > :last-child{border-bottom:0}
+.rail h2,.rail summary{font:600 11px var(--f-body);text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin:0 0 10px}
+.rail summary{cursor:pointer;margin:0;display:flex;align-items:center;gap:8px;list-style:none}
+.rail summary::-webkit-details-marker{display:none}
+.rail summary::after{content:"+";margin-left:auto;font:500 14px var(--f-mono)}
+.rail details[open] summary{margin-bottom:10px}
+.rail details[open] summary::after{content:"–"}
+.gearname{text-transform:none;letter-spacing:0;color:var(--fg);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sheet-head{display:none}
+.sl{display:grid;grid-template-columns:96px minmax(0,1fr) 40px;align-items:center;gap:8px;margin:8px 0}
+.sl label{font-size:13px}
+.sl output{font:400 12px var(--f-mono);color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent);margin:0;min-height:28px}
+.field{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.field label{font-size:12.5px;color:var(--muted)}
+.field input{background:var(--bg);border:1px solid var(--line);color:var(--fg);font:15px var(--f-body);padding:8px 10px;border-radius:8px;min-width:0}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:9px;overflow:hidden;margin-bottom:10px}
+.seg button{appearance:none;border:0;background:transparent;color:var(--muted);font:600 13px var(--f-body);padding:9px 6px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--raised);color:var(--fg)}
+.sync{display:block;margin-top:10px;font:400 11px var(--f-mono);color:var(--muted)}
+.stack{display:flex;flex-direction:column;gap:8px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+
+/* dock + toast (phone) */
+.dock{display:none}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 18px);z-index:30;width:min(440px,calc(100% - 32px));background:#2d2d31;border:1px solid #44444a;border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.toast p{margin:0;font-size:14px}
+.prog{height:5px;background:#1b1b1d;border-radius:3px;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:15}
+
+/* viewer */
+.viewer{position:fixed;inset:0;background:rgba(12,12,13,.97);z-index:20;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top,0px) + 10px) 16px calc(env(safe-area-inset-bottom,0px) + 12px);gap:10px}
+.vhead{display:flex;align-items:center;gap:8px}
+.vhead .name{font-size:14px;margin-right:auto;min-width:0}
+.stage{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+.stage canvas{max-width:100%;max-height:100%;display:block;touch-action:pan-y}
+.split-line{position:absolute;width:2px;background:var(--accent);pointer-events:none}
+.vtag{position:absolute;top:8px;font:500 10.5px var(--f-mono);background:rgba(0,0,0,.6);padding:2px 6px;border-radius:4px;pointer-events:none}
+.vctl{display:flex;flex-wrap:wrap;gap:4px 20px;align-items:center;max-width:900px;width:100%;margin:0 auto}
+.vctl .sl{flex:1 1 240px;margin:0}
+.vctl .notes{flex-basis:100%}
+.check{display:flex;align-items:center;gap:8px;font-size:13px;min-height:34px}
+
+@media (max-width:860px){
+  .top-actions{display:none}
+  .work{grid-template-columns:minmax(0,1fr);padding-bottom:calc(var(--dock-h) + env(safe-area-inset-bottom,0px) + 24px)}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .rail{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:16;max-height:78vh;border-radius:16px 16px 0 0;border-bottom:0;transform:translateY(105%);transition:transform .25s ease;padding-bottom:env(safe-area-inset-bottom,0px)}
+  .rail.open{transform:none}
+  .sheet-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--panel);z-index:1;font:700 16px var(--f-display)}
+  .dock{display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:8px;position:fixed;left:0;right:0;bottom:0;z-index:12;background:rgba(24,24,26,.96);border-top:1px solid var(--line);padding:10px 16px calc(env(safe-area-inset-bottom,0px) + 10px);backdrop-filter:blur(8px)}
+  .dock .btn{min-height:44px}
+  .toast{bottom:calc(var(--dock-h) + env(safe-area-inset-bottom,0px) + 14px)}
+  .export-desk{display:none}
+}
+@media (prefers-reduced-motion:reduce){.prog i,.rail{transition:none}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><span class="lamp" aria-hidden="true"></span><h1>Labo de série</h1></div>
+    <span class="count" id="count"></span>
+    <div class="top-actions">
+      <label class="btn" for="pick">Importer</label>
+      <button class="btn primary" id="saveTop" type="button">Enregistrer</button>
+    </div>
+  </div>
+</header>
+<input id="pick" type="file" multiple hidden accept="image/*,.jpg,.jpeg,.png,.webp,.heic,.cr2,.cr3,.nef,.arw,.raf,.dng,.orf,.rw2,.pef,.srw">
+
+<section class="looks" aria-label="Choisir un look">
+  <div class="strip" id="strip" role="group" aria-label="Looks"></div>
+  <p class="lookdesc" id="lookDesc"></p>
+</section>
+
+<main class="wrap work">
+  <section class="bench" aria-label="Photos de la série">
+    <div id="empty" class="empty">
+      <h2>Ta pellicule en trois gestes</h2>
+      <ol class="steps">
+        <li><b>Importe</b> toute la série d'un coup.</li>
+        <li><b>Choisis un look</b> dans la bande du haut : il est le même pour toutes, chaque photo est corrigée à part.</li>
+        <li><b>Enregistre</b> : sur téléphone les photos partent une à une vers ta galerie, sur ordinateur en ZIP ou en fichiers séparés.</li>
+      </ol>
+      <label class="btn primary big" for="pick">Importer des photos</label>
+      <p class="hint">JPEG, PNG, WebP ou RAW (aperçu intégré). Rien n'est envoyé : tout se calcule sur ton appareil. En dessous, 4 photos d'exemple.</p>
+    </div>
+    <div class="bar">
+      <span class="lbl" id="barLbl"></span>
+      <button id="ab" class="btn ghost small" type="button" aria-pressed="false">Original</button>
+      <button id="clear" class="btn ghost small" type="button" hidden>Nouvelle série</button>
+    </div>
+    <div id="grid" class="grid"></div>
+  </section>
+
+  <aside class="rail" id="rail" aria-label="Réglages">
+    <div class="sheet-head"><span>Réglages</span><button id="sheetClose" class="btn small" type="button">Terminé</button></div>
+    <section>
+      <h2>Ajuster le look</h2>
+      <div id="lookSliders"></div>
+      <button id="saveLook" class="btn ghost small" type="button">Garder ce look</button>
+    </section>
+    <section>
+      <h2>Correction auto</h2>
+      <p class="hint">Exposition, dominante, teint de peau, contraste : analysés sur chaque photo avant le look.</p>
+      <div id="autoSliders"></div>
+    </section>
+    <details id="gearBox">
+      <summary>Mon matériel <span class="gearname" id="gearName"></span></summary>
+      <div class="stack">
+        <button id="mju" class="btn small wide" type="button">Charger Olympus mju II + Portra 400</button>
+        <div class="field"><label for="gearInput">Appareil / pellicule</label><input id="gearInput" type="text" placeholder="ex. Olympus mju II · Portra 400"></div>
+      </div>
+      <div id="gearSliders"></div>
+      <button id="learn" class="btn ghost small" type="button">Apprendre de cette série</button>
+      <p class="hint" id="learnOut" style="margin-top:8px"></p>
+    </details>
+    <section>
+      <h2>Enregistrer</h2>
+      <div class="field"><label for="series">Nom de la série</label><input id="series" type="text" value="Série"></div>
+      <div class="seg" id="modeSeg" role="group" aria-label="Format">
+        <button type="button" data-mode="photos" aria-pressed="false">Photos séparées</button>
+        <button type="button" data-mode="zip" aria-pressed="false">Un fichier ZIP</button>
+      </div>
+      <button id="export" class="btn primary wide" type="button">Enregistrer la série</button>
+      <span id="sync" class="sync"></span>
+    </section>
+  </aside>
+</main>
+
+<nav class="dock" aria-label="Actions">
+  <label class="btn" for="pick">Importer</label>
+  <button id="openSheet" class="btn" type="button">Réglages</button>
+  <button id="saveDock" class="btn primary" type="button">Enregistrer</button>
+</nav>
+<div class="scrim" id="scrim" hidden></div>
+
+<div class="toast" id="toast" role="status" hidden>
+  <p id="toastMsg"></p>
+  <div class="prog" id="prog" hidden><i></i></div>
+  <div class="row" id="toastActs" hidden><button id="resume" class="btn small primary" type="button">Continuer</button></div>
+</div>
+
+<div id="viewer" class="viewer" hidden role="dialog" aria-modal="true" aria-label="Photo en grand">
+  <div class="vhead">
+    <span class="name" id="vname"></span>
+    <button id="vprev" class="btn ghost small" type="button" aria-label="Photo précédente">←</button>
+    <button id="vnext" class="btn ghost small" type="button" aria-label="Photo suivante">→</button>
+    <button id="vclose" class="btn small" type="button">Fermer</button>
+  </div>
+  <div class="stage" id="stage">
+    <canvas id="vcan"></canvas>
+    <div class="split-line" id="splitLine"></div>
+  </div>
+  <div class="vctl">
+    <div class="notes" id="vnotes"></div>
+    <div id="nudgeSliders" style="display:contents"></div>
+    <label class="check"><input type="checkbox" id="vskip"> Ne pas enregistrer</label>
+  </div>
+</div>
+
+<script src="jszip.min.js"></script>
+<script>
+(() => {
+"use strict";
+const $ = id => document.getElementById(id);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+
+/* ---------- colour maths ---------- */
+const S2L = new Float32Array(256);
+for (let i = 0; i < 256; i++) { const v = i / 255; S2L[i] = v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }
+const l2s = x => { x = clamp(x, 0, 1); return x <= 0.0031308 ? 12.92 * x : 1.055 * Math.pow(x, 1 / 2.4) - 0.055; };
+function hash(x, y) {
+  let n = (Math.imul(x, 374761393) + Math.imul(y, 668265263)) | 0;
+  n = Math.imul(n ^ (n >>> 13), 1274126177);
+  return ((n ^ (n >>> 16)) >>> 0) / 4294967295;
+}
+
+/* ---------- looks ---------- */
+const Z = [0, 0, 0];
+const PRESETS = [
+  { id: "naturel", name: "Naturel", contrast: .1, sat: .05, warm: 0, fade: 0, grain: 0, vign: .1, tint: 0, shadows: 0, highlights: 0, ss: Z, sh: Z, bw: false },
+  // Kodak Portra 400: soft contrast, long highlight roll-off, peach skin, slightly cyan-green shadows, fine grain (scans already carry real grain)
+  { id: "portra400", name: "Portra 400", desc: "Le rendu Portra : contraste doux, peau pêche, hautes lumières qui ne brûlent pas.", contrast: -.08, sat: -.06, warm: .22, fade: .18, grain: .12, vign: 0, tint: -.04, shadows: .12, highlights: -.28, ss: [-.08, .03, .07], sh: [.14, .07, -.06], bw: false },
+  { id: "film", name: "Film chaud", contrast: .15, sat: -.08, warm: .35, fade: .35, grain: .25, vign: .25, tint: -.05, shadows: .1, highlights: -.15, ss: [.05, 0, -.06], sh: [.16, .05, -.12], bw: false },
+  { id: "cine", name: "Ciné", contrast: .35, sat: -.1, warm: .05, fade: .15, grain: .15, vign: .35, tint: 0, shadows: 0, highlights: -.1, ss: [-.3, .05, .35], sh: [.3, .1, -.25], bw: false },
+  { id: "fane", name: "Fané", contrast: -.2, sat: -.25, warm: .1, fade: .7, grain: .3, vign: .15, tint: 0, shadows: .15, highlights: -.1, ss: [0, .05, .12], sh: [.1, .05, 0], bw: false },
+  { id: "eclat", name: "Éclatant", contrast: .3, sat: .35, warm: .05, fade: 0, grain: 0, vign: .2, tint: 0, shadows: .15, highlights: -.2, ss: Z, sh: Z, bw: false },
+  { id: "nb", name: "Noir & blanc", contrast: .45, sat: 0, warm: 0, fade: .15, grain: .45, vign: .3, tint: 0, shadows: .05, highlights: -.1, ss: Z, sh: Z, bw: true },
+  // Portra 400 — creative variants (art: true → own row)
+  { art: true, id: "p-pastel", name: "Surex pastel", desc: "Portra exposée à 200 : lumineuse, aérienne, couleurs crème et pastel.", ev: .45, contrast: -.25, sat: -.2, warm: .15, fade: .3, grain: .1, vign: 0, tint: -.03, shadows: .3, highlights: -.35, ss: [0, .04, .07], sh: [.08, .06, 0], bw: false },
+  { art: true, id: "p-push", name: "Poussée +2", desc: "Développement poussé : contraste, grain marqué, rouges et oranges dans les ombres, ton éditorial.", ev: 0, contrast: .3, sat: .15, warm: .3, fade: .05, grain: .4, vign: .2, tint: 0, shadows: 0, highlights: -.1, ss: [.25, .08, -.12], sh: [.1, .04, -.06], bw: false },
+  { art: true, id: "p-cross", name: "Croisé E6", desc: "Négatif développé comme une diapo : contraste dur, ombres bleu-cyan, hautes lumières jaune-vert.", ev: .1, contrast: .5, sat: .3, warm: 0, fade: 0, grain: .25, vign: .3, tint: -.15, shadows: -.05, highlights: -.05, ss: [-.2, .05, .35], sh: [.2, .25, -.3], bw: false },
+  { art: true, id: "p-nuit", name: "Flash de nuit", desc: "Le mode nuit du mju II : sujet chaud au flash, fond sombre bleu-vert, coins lourds.", ev: -.2, contrast: .35, sat: .1, warm: .1, fade: 0, grain: .3, vign: .4, tint: 0, shadows: -.15, highlights: -.1, ss: [-.15, .05, .2], sh: [.15, .05, -.1], bw: false },
+  { art: true, id: "p-webb", name: "Couleur de rue", desc: "Esprit Alex Webb : ombres profondes, quelques couleurs vives contre des tons sourds.", ev: -.1, contrast: .4, sat: .3, warm: .1, fade: 0, grain: .1, vign: .15, tint: 0, shadows: -.2, highlights: -.15, ss: [-.05, 0, .1], sh: [.1, .05, -.04], bw: false },
+  { art: true, id: "p-tirage", name: "Tirage 90s", desc: "Tirage de labo de quartier : chaud, un peu passé, grain visible, souvenir d'été.", ev: .1, contrast: .1, sat: -.05, warm: .5, fade: .4, grain: .3, vign: .25, tint: 0, shadows: .1, highlights: -.2, ss: [.1, .02, -.1], sh: [.18, .1, -.15], bw: false },
+];
+const LOOK_SLIDERS = [["contrast", "Contraste", -1, 1], ["sat", "Saturation", -1, 1], ["warm", "Chaleur", -1, 1], ["fade", "Fondu", 0, 1], ["grain", "Grain", 0, 1], ["vign", "Vignette", 0, 1]];
+
+// Olympus mju II (35 mm f/2.8): dark corners, lab scans arrive already sharpened, Portra tolerates a little extra light
+const MJU = { name: "Olympus mju II · Portra 400", ev: .1, warm: .05, lens: .2, sharpen: .15 };
+const state = {
+  look: { ...PRESETS[1] }, lookId: "portra400",
+  strength: .8,
+  gear: { ...MJU },
+  savedLooks: [],
+  photos: [], showBefore: false, viewIdx: -1,
+};
+
+/* ---------- analysis: what each photo needs ---------- */
+function analyse(img) {
+  const d = img.data, n = d.length / 4;
+  const hist = new Uint32Array(256);
+  let sr = 0, sg = 0, sb = 0, cnt = 0, kr = 0, kg = 0, kb = 0, kc = 0;
+  for (let i = 0; i < d.length; i += 4) {
+    const r = d[i], g = d[i + 1], b = d[i + 2];
+    const y = (0.2126 * r + 0.7152 * g + 0.0722 * b) | 0;
+    hist[y]++;
+    const mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+    if (y > 35 && y < 225 && mx - mn < 0.55 * mx) { sr += S2L[r]; sg += S2L[g]; sb += S2L[b]; cnt++; }
+    // classic skin-tone gate (sRGB): reddish, not too saturated, not blown
+    if (r > 95 && g > 40 && b > 20 && r > g && g > b && r - g > 15 && r - b > 30 && mx - mn < 140 && y < 235) { kr += S2L[r]; kg += S2L[g]; kb += S2L[b]; kc++; }
+  }
+  const pct = (h, total, p) => { let acc = 0; const t = total * p; for (let i = 0; i < 256; i++) { acc += h[i]; if (acc >= t) return i; } return 255; };
+  const med = pct(hist, n, .5), p995 = pct(hist, n, .995);
+  let ev = Math.log2(0.18 / Math.max(S2L[med], 0.002)) * 0.8;
+  if (ev > 0) ev = Math.min(ev, Math.log2(1 / Math.max(S2L[p995], 0.01)) + 0.6);
+  ev = clamp(ev, -1.5, 1.5); if (Math.abs(ev) < .1) ev = 0;
+
+  let wb = [1, 1, 1];
+  if (cnt > n * .05) {
+    const m = [sr / cnt, sg / cnt, sb / cnt], grey = (m[0] + m[1] + m[2]) / 3;
+    wb = m.map(v => clamp(1 + (grey / Math.max(v, 1e-4) - 1) * .7, .8, 1.25));
+  }
+  // skin present: pull the average skin toward a peach tone (linear ratio ≈ 1 : .55 : .35) — what Portra is loved for
+  const skin = kc > n * .04;
+  if (skin) {
+    const mr = kr / kc, tg = clamp(.554 * mr / (kg / kc), .85, 1.18), tb = clamp(.351 * mr / (kb / kc), .8, 1.25);
+    wb = [(wb[0] + 1) / 2, (wb[1] + tg) / 2, (wb[2] + tb) / 2];
+  }
+  { const norm = 0.2126 * wb[0] + 0.7152 * wb[1] + 0.0722 * wb[2]; wb = wb.map(v => v / norm); }
+  // second pass: tones after exposure + white balance
+  const h2 = new Uint32Array(256), k = Math.pow(2, ev);
+  for (let i = 0; i < d.length; i += 4) {
+    const y = 0.2126 * l2s(S2L[d[i]] * wb[0] * k) + 0.7152 * l2s(S2L[d[i + 1]] * wb[1] * k) + 0.0722 * l2s(S2L[d[i + 2]] * wb[2] * k);
+    h2[clamp((y * 255) | 0, 0, 255)]++;
+  }
+  const q = p => pct(h2, n, p) / 255;
+  const lo = q(.005), hi = q(.995), p10 = q(.10), p97 = q(.97);
+  const bp = clamp(lo, 0, .06), wp = clamp(hi, .88, 1);
+  const sh = p10 < .1 ? clamp(.35 * (.1 - p10) / .1 + .1, 0, .45) : 0;
+  const hl = p97 > .97 ? -.3 : 0;
+
+  const notes = [];
+  if (ev >= .25) notes.push(["Sous-exposée +" + ev.toFixed(1) + " EV", "w"]);
+  if (ev <= -.25) notes.push(["Surexposée " + ev.toFixed(1) + " EV", "w"]);
+  if (wb[2] > 1.06 && wb[2] > wb[0]) notes.push(["Dominante chaude", "w"]);
+  else if (wb[0] > 1.06) notes.push(["Dominante froide", "w"]);
+  if (wb[1] > 1.04) notes.push(["Dominante magenta", "w"]);
+  else if (wb[1] < .96) notes.push(["Dominante verte", "w"]);
+  if (hi - lo < .7) notes.push(["Contraste faible", "w"]);
+  if (sh > 0) notes.push(["Ombres bouchées", "w"]);
+  if (hl < 0) notes.push(["Ciel brûlé", "w"]);
+  if (!notes.length) notes.push(["Rien à corriger", "ok"]);
+  if (skin) notes.push(["Peau détectée · teint ajusté", "ok"]);
+  return { ev, wb, bp, wp, sh, hl, notes };
+}
+
+/* ---------- processing ---------- */
+function buildParams(p, look) {
+  const L = look || state.look, G = state.gear, A = p.auto, s = state.strength, N = p.nudge;
+  const ev = s * A.ev + G.ev + N.ev + (L.ev || 0);
+  const warm = L.warm + G.warm + N.warm;
+  const wb = A.wb.map(v => 1 + s * (v - 1));
+  wb[0] *= 1 + .1 * warm; wb[2] *= 1 - .1 * warm; wb[1] *= 1 - .06 * L.tint;
+  const bp = s * A.bp, wp = 1 - s * (1 - A.wp);
+  const shd = s * A.sh + L.shadows, hil = s * A.hl + L.highlights, gain = Math.pow(2, ev);
+  const luts = [0, 1, 2].map(c => {
+    const t = new Uint8ClampedArray(256);
+    for (let i = 0; i < 256; i++) {
+      let x = l2s(S2L[i] * wb[c] * gain);
+      x = clamp((x - bp) / (wp - bp), 0, 1);
+      x += shd * x * (1 - x) * (1 - x) * 1.6;
+      x += hil * x * x * (1 - x) * 1.6;
+      x = clamp(x, 0, 1);
+      const sc = x < .5 ? 2 * x * x : 1 - 2 * (1 - x) * (1 - x);
+      x += L.contrast * (sc - x);
+      x += L.ss[c] * (1 - x) * (1 - x) * .25 + L.sh[c] * x * x * .25;
+      x = L.fade * .1 + x * (1 - L.fade * .14);
+      t[i] = Math.round(clamp(x, 0, 1) * 255);
+    }
+    return t;
+  });
+  return { luts, sat: L.bw ? -1 : L.sat, vign: L.vign * .45 - G.lens * .45, grain: L.grain, sharpen: G.sharpen };
+}
+
+function render(src, P, opt) {
+  const w = src.width, h = src.height, s = src.data;
+  const out = new ImageData(w, h), o = out.data;
+  const [R, G, B] = P.luts, sat = 1 + P.sat, cell = opt.cell || 1, ga = P.grain * 38;
+  const cx = w / 2, cy = h / 2, inv = 1 / (cx * cx + cy * cy);
+  for (let y = 0; y < h; y++) {
+    const dy = (y - cy) * (y - cy), gy = (y / cell) | 0;
+    for (let x = 0; x < w; x++) {
+      const i = (y * w + x) * 4;
+      let r = R[s[i]], g = G[s[i + 1]], b = B[s[i + 2]];
+      const l = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      r = l + (r - l) * sat; g = l + (g - l) * sat; b = l + (b - l) * sat;
+      if (P.vign) { const f = 1 - P.vign * ((x - cx) * (x - cx) + dy) * inv; r *= f; g *= f; b *= f; }
+      if (ga) { const yy = l / 255, m = 4 * yy * (1 - yy) + .25; const nz = (hash((x / cell) | 0, gy) - .5) * ga * m; r += nz; g += nz; b += nz; }
+      o[i] = r; o[i + 1] = g; o[i + 2] = b; o[i + 3] = 255;
+    }
+  }
+  if (opt.sharpen && P.sharpen > 0) sharpenPass(out, P.sharpen * 0.9);
+  return out;
+}
+function sharpenPass(img, a) {
+  const w = img.width, h = img.height, d = img.data, c = new Uint8ClampedArray(d);
+  for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
+    const i = (y * w + x) * 4;
+    for (let k = 0; k < 3; k++) {
+      const v = c[i + k];
+      d[i + k] = v + a * (4 * v - c[i + k - 4] - c[i + k + 4] - c[i + k - w * 4] - c[i + k + w * 4]);
+    }
+  }
+}
+
+/* ---------- decoding (incl. RAW embedded preview) ---------- */
+const RAW = /\.(cr2|cr3|nef|arw|raf|dng|orf|rw2|pef|srw)$/i;
+async function decode(file) {
+  if (!RAW.test(file.name)) {
+    try { return await createImageBitmap(file, { imageOrientation: "from-image" }); } catch (e) { /* fall through */ }
+  }
+  const buf = new Uint8Array(await file.arrayBuffer());
+  const soi = [];
+  for (let i = 0; i < buf.length - 3 && soi.length < 40; i++) if (buf[i] === 0xFF && buf[i + 1] === 0xD8 && buf[i + 2] === 0xFF) soi.push(i);
+  let best = null;
+  for (const at of soi.slice(0, 14)) {
+    try {
+      const bm = await createImageBitmap(new Blob([buf.subarray(at)], { type: "image/jpeg" }));
+      if (!best || bm.width * bm.height > best.width * best.height) { if (best) best.close(); best = bm; } else bm.close();
+    } catch (e) { /* not a decodable preview */ }
+  }
+  if (!best) throw new Error("format");
+  return best;
+}
+function toImageData(bm, maxSide) {
+  const k = maxSide ? Math.min(1, maxSide / Math.max(bm.width, bm.height)) : 1;
+  const w = Math.max(1, Math.round(bm.width * k)), h = Math.max(1, Math.round(bm.height * k));
+  const c = document.createElement("canvas"); c.width = w; c.height = h;
+  const x = c.getContext("2d", { willReadFrequently: true });
+  x.imageSmoothingQuality = "high"; x.drawImage(bm, 0, 0, w, h);
+  return x.getImageData(0, 0, w, h);
+}
+
+/* ---------- sample scenes so the page opens working ---------- */
+function scene(seed, opts) {
+  const w = 480, h = 320, c = document.createElement("canvas"); c.width = w; c.height = h;
+  const x = c.getContext("2d");
+  const sky = x.createLinearGradient(0, 0, 0, h * .62);
+  sky.addColorStop(0, opts.sky[0]); sky.addColorStop(1, opts.sky[1]);
+  x.fillStyle = sky; x.fillRect(0, 0, w, h);
+  x.fillStyle = opts.sun; x.beginPath(); x.arc(w * opts.sx, h * .36, 26, 0, 7); x.fill();
+  opts.hills.forEach((col, j) => {
+    x.fillStyle = col; x.beginPath(); x.moveTo(0, h);
+    for (let i = 0; i <= w; i += 8) x.lineTo(i, h * (.45 + j * .09) + Math.sin(i / (40 + j * 25) + seed + j) * (22 - j * 5) + Math.sin(i / 13 + j) * 3);
+    x.lineTo(w, h); x.fill();
+  });
+  const water = x.createLinearGradient(0, h * .78, 0, h);
+  water.addColorStop(0, opts.sky[1]); water.addColorStop(1, opts.sky[0]);
+  x.fillStyle = water; x.fillRect(0, h * .8, w, h * .2);
+  const img = x.getImageData(0, 0, w, h), d = img.data, k = Math.pow(2, opts.ev);
+  for (let i = 0; i < d.length; i += 4) for (let ch = 0; ch < 3; ch++) {
+    let v = l2s(S2L[d[i + ch]] * k * opts.cast[ch]);
+    if (opts.flat) v = .22 + v * .55;
+    d[i + ch] = v * 255 + (hash(i, seed) - .5) * 10;
+  }
+  return img;
+}
+function loadSamples() {
+  const defs = [
+    ["Exemple · lac au matin", 1, { sky: ["#6f9bd6", "#f0c99a"], sun: "#fff3d6", sx: .7, hills: ["#55627a", "#3c4a3f", "#26302a"], ev: -1.1, cast: [.86, .96, 1.18] }],
+    ["Exemple · plein soleil", 2, { sky: ["#4f86d8", "#cfe2f2"], sun: "#ffffff", sx: .25, hills: ["#7c8b6a", "#5a6b45", "#3d4a2c"], ev: .75, cast: [1.06, 1, .9] }],
+    ["Exemple · jour de brume", 3, { sky: ["#9fb0bd", "#d9dcd6"], sun: "#f4f1e6", sx: .5, hills: ["#8a978d", "#6f7d71", "#566358"], ev: 0, cast: [.95, 1.08, .95], flat: true }],
+    ["Exemple · fin de journée", 4, { sky: ["#3e4f86", "#f2a868"], sun: "#ffd9a0", sx: .55, hills: ["#5b4a5c", "#3f3442", "#251f29"], ev: 0, cast: [1, 1, 1] }],
+  ];
+  state.photos = defs.map(([name, seed, o], i) => makePhoto({ name, file: null, sample: true, thumb: scene(seed, o), id: "s" + i }));
+}
+function makePhoto(p) { return { nudge: { ev: 0, warm: 0 }, skip: false, auto: analyse(p.thumb), ...p }; }
+
+
+
+const isPhone = matchMedia("(max-width:860px), (pointer:coarse)").matches;
+state.exportMode = isPhone ? "photos" : "zip";
+const dlP = window.claude?.use ? window.claude.use("downloads").catch(() => null) : Promise.resolve(null);
+
+/* ---------- toast: the one status line, visible on every screen ---------- */
+let toastTimer = 0;
+function toast(msg, { progress = null, stay = false, resume = false } = {}) {
+  clearTimeout(toastTimer);
+  $("toast").hidden = false; $("toastMsg").textContent = msg;
+  $("prog").hidden = progress === null; if (progress !== null) $("prog").firstElementChild.style.width = Math.round(progress * 100) + "%";
+  $("toastActs").hidden = !resume;
+  if (!stay && !resume) toastTimer = setTimeout(() => $("toast").hidden = true, 4000);
+}
+
+/* ---------- helpers ---------- */
+function scaled(img, maxSide) {
+  const k = Math.min(1, maxSide / Math.max(img.width, img.height));
+  const c = document.createElement("canvas"); c.width = img.width; c.height = img.height; c.getContext("2d").putImageData(img, 0, 0);
+  const o = document.createElement("canvas"); o.width = Math.max(1, Math.round(img.width * k)); o.height = Math.max(1, Math.round(img.height * k));
+  const x = o.getContext("2d", { willReadFrequently: true }); x.imageSmoothingQuality = "high"; x.drawImage(c, 0, 0, o.width, o.height);
+  return x.getImageData(0, 0, o.width, o.height);
+}
+const real = () => state.photos.filter(p => !p.sample);
+const hero = () => state.photos.find(p => !p.skip) || state.photos[0];
+
+/* ---------- look strip: every look previewed on your own first photo ---------- */
+function stripLooks() {
+  return [
+    ...PRESETS.filter(p => !p.art),
+    { sep: "Portra · créatif" }, ...PRESETS.filter(p => p.art),
+    ...(state.savedLooks.length ? [{ sep: "Mes looks" }, ...state.savedLooks] : []),
+  ];
+}
+function buildStrip() {
+  const box = $("strip");
+  box.replaceChildren(...stripLooks().map(l => {
+    if (l.sep) { const s = document.createElement("span"); s.className = "strip-sep"; s.textContent = l.sep; return s; }
+    const b = document.createElement("button"); b.type = "button"; b.className = "look-item"; b.dataset.id = l.id;
+    const c = document.createElement("canvas"); c.width = 168; c.height = 112;
+    const s = document.createElement("span"); s.textContent = l.name;
+    b.append(c, s); if (l.desc) b.title = l.desc;
+    b.addEventListener("click", () => { state.look = JSON.parse(JSON.stringify(l)); state.lookId = l.id; lookCtl.forEach(x => x.sync()); markStrip(); changed(); });
+    return b;
+  }));
+  markStrip(); paintStrip();
+}
+function markStrip() {
+  $("strip").querySelectorAll(".look-item").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.id === state.lookId)));
+  const l = stripLooks().find(x => x.id === state.lookId);
+  $("lookDesc").textContent = state.lookId ? (l?.desc || l?.name || "") : "Look ajusté à la main · « Garder ce look » pour le retrouver dans la bande.";
+}
+let stripGen = 0;
+async function paintStrip() {
+  const my = ++stripGen, p = hero(); if (!p) return;
+  p.mini ||= scaled(p.thumb, 168);
+  const looks = stripLooks().filter(l => !l.sep);
+  for (const b of $("strip").querySelectorAll(".look-item")) {
+    if (my !== stripGen) return;
+    const l = looks.find(x => x.id === b.dataset.id); if (!l) continue;
+    const c = b.firstElementChild, ctx = c.getContext("2d");
+    const out = render(p.mini, buildParams(p, l), { cell: 1 });
+    const k = Math.max(c.width / out.width, c.height / out.height);
+    const tmp = document.createElement("canvas"); tmp.width = out.width; tmp.height = out.height; tmp.getContext("2d").putImageData(out, 0, 0);
+    ctx.drawImage(tmp, (c.width - out.width * k) / 2, (c.height - out.height * k) / 2, out.width * k, out.height * k);
+    await new Promise(r => setTimeout(r, 0));
+  }
+}
+
+/* ---------- grid ---------- */
+function cardFor(p, idx) {
+  const card = document.createElement("button");
+  card.type = "button"; card.className = "card"; card.setAttribute("aria-label", "Ouvrir " + p.name);
+  const fr = document.createElement("div"); fr.className = "frame";
+  const cv = document.createElement("canvas"); cv.width = p.thumb.width; cv.height = p.thumb.height; fr.append(cv);
+  if (p.sample) { const t = document.createElement("span"); t.className = "tag"; t.textContent = "EXEMPLE"; fr.append(t); }
+  const meta = document.createElement("div"); meta.className = "meta";
+  const nm = document.createElement("div"); nm.className = "name"; nm.textContent = p.name;
+  const notes = document.createElement("div"); notes.className = "notes";
+  meta.append(nm, notes); card.append(fr, meta);
+  card.addEventListener("click", () => openViewer(idx));
+  p.el = { card, cv, notes };
+  return card;
+}
+function paintNotes(box, p) {
+  box.replaceChildren(...p.auto.notes.map(([t, k]) => { const s = document.createElement("span"); s.className = "note " + k; s.textContent = t; return s; }));
+  if (p.nudge.ev || p.nudge.warm) { const s = document.createElement("span"); s.className = "note"; s.textContent = "Retouchée"; box.append(s); }
+}
+function buildGrid() {
+  $("grid").replaceChildren(...state.photos.map(cardFor));
+  const n = real().length;
+  $("empty").hidden = n > 0; $("clear").hidden = n === 0;
+  $("count").textContent = n ? `${n} photo${n > 1 ? "s" : ""}` : "";
+  $("barLbl").textContent = n ? "Touche une photo pour la voir en grand, comparer et la retoucher." : "Exemples";
+  const k = state.photos.filter(p => p.file && !p.skip).length;
+  ["saveTop", "saveDock"].forEach(id => $(id).textContent = k ? `Enregistrer ${k}` : "Enregistrer");
+  scheduleRender(); paintStrip();
+}
+let gen = 0, raf = 0;
+function scheduleRender() { cancelAnimationFrame(raf); raf = requestAnimationFrame(renderAll); }
+async function renderAll() {
+  const my = ++gen;
+  for (const p of state.photos) {
+    if (my !== gen) return;
+    p.el.cv.getContext("2d").putImageData(state.showBefore ? p.thumb : render(p.thumb, buildParams(p), { cell: 1 }), 0, 0);
+    p.el.card.classList.toggle("skip", p.skip);
+    paintNotes(p.el.notes, p);
+    await new Promise(r => setTimeout(r, 0));
+  }
+  if (state.viewIdx >= 0) renderViewer();
+}
+
+/* ---------- sliders ---------- */
+function slider(parent, id, label, min, max, get, set, step = .01, fmt = v => (v > 0 ? "+" : "") + Math.round(v * 100)) {
+  const row = document.createElement("div"); row.className = "sl";
+  const lb = document.createElement("label"); lb.htmlFor = id; lb.textContent = label;
+  const r = document.createElement("input"); r.type = "range"; r.id = id; r.min = min; r.max = max; r.step = step; r.value = get();
+  const out = document.createElement("output"); out.htmlFor = id; out.textContent = fmt(get());
+  r.addEventListener("input", () => { set(+r.value); out.textContent = fmt(+r.value); });
+  row.append(lb, r, out); parent.append(row);
+  return { sync() { r.value = get(); out.textContent = fmt(get()); } };
+}
+const lookCtl = []; let gearCtl = [], nudgeCtl = [], strengthCtl;
+function buildControls() {
+  LOOK_SLIDERS.forEach(([k, label, mn, mx]) => lookCtl.push(slider($("lookSliders"), "look-" + k, label, mn, mx, () => state.look[k], v => { state.look[k] = v; state.lookId = null; markStrip(); changed(); })));
+  strengthCtl = slider($("autoSliders"), "strength", "Intensité", 0, 1, () => state.strength, v => { state.strength = v; changed(); }, .01, v => Math.round(v * 100) + "%");
+  const gs = $("gearSliders"), ev1 = v => (v > 0 ? "+" : "") + v.toFixed(1);
+  gearCtl = [
+    slider(gs, "g-ev", "Expo de base", -1, 1, () => state.gear.ev, v => { state.gear.ev = v; changed(); }, .1, ev1),
+    slider(gs, "g-warm", "Couleur de base", -1, 1, () => state.gear.warm, v => { state.gear.warm = v; changed(); }),
+    slider(gs, "g-lens", "Coins sombres", 0, 1, () => state.gear.lens, v => { state.gear.lens = v; changed(); }),
+    slider(gs, "g-sharp", "Netteté", 0, 1, () => state.gear.sharpen, v => { state.gear.sharpen = v; changed(); }),
+  ];
+  $("gearInput").addEventListener("input", e => { state.gear.name = e.target.value; paintGearName(); persist(); });
+  const nz = $("nudgeSliders");
+  nudgeCtl = [
+    slider(nz, "n-ev", "Exposition", -2, 2, () => cur()?.nudge.ev ?? 0, v => { cur().nudge.ev = v; changed(true); }, .1, ev1),
+    slider(nz, "n-warm", "Chaleur", -1, 1, () => cur()?.nudge.warm ?? 0, v => { cur().nudge.warm = v; changed(true); }),
+  ];
+}
+function paintGearName() { $("gearName").textContent = state.gear.name ? "· " + state.gear.name : ""; }
+function paintMode() { $("modeSeg").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.mode === state.exportMode))); }
+function syncControls() {
+  lookCtl.forEach(c => c.sync()); gearCtl.forEach(c => c.sync()); strengthCtl.sync();
+  $("gearInput").value = state.gear.name; paintGearName(); paintMode();
+}
+let rerenderTimer = 0;
+function changed(viewerOnly) {
+  clearTimeout(rerenderTimer);
+  rerenderTimer = setTimeout(() => {
+    if (viewerOnly) {
+      renderViewer(); const p = cur();
+      if (p) { p.el.cv.getContext("2d").putImageData(render(p.thumb, buildParams(p), { cell: 1 }), 0, 0); paintNotes(p.el.notes, p); }
+    } else { scheduleRender(); paintStrip(); }
+  }, 40);
+  if (!viewerOnly) persist();
+}
+
+/* ---------- viewer ---------- */
+const cur = () => state.photos[state.viewIdx];
+let split = .5;
+async function openViewer(i) {
+  state.viewIdx = i; const p = cur();
+  $("viewer").hidden = false; $("vname").textContent = `${i + 1}/${state.photos.length} · ${p.name}`;
+  $("vskip").checked = p.skip; nudgeCtl.forEach(c => c.sync()); paintNotes($("vnotes"), p);
+  if (!p.mid) {
+    if (p.file) { try { const bm = await decode(p.file); p.mid = toImageData(bm, 1600); bm.close(); } catch (e) { p.mid = p.thumb; } }
+    else p.mid = p.thumb;
+  }
+  if (state.viewIdx === i) renderViewer();
+}
+function renderViewer() {
+  const p = cur(); if (!p || !p.mid) return;
+  const c = $("vcan"); c.width = p.mid.width; c.height = p.mid.height;
+  const x = c.getContext("2d");
+  x.putImageData(render(p.mid, buildParams(p), { cell: Math.max(1, Math.round(p.mid.width / 1600)), sharpen: true }), 0, 0);
+  x.putImageData(p.mid, 0, 0, 0, 0, Math.round(c.width * split), c.height);
+  paintNotes($("vnotes"), p); placeSplit();
+}
+function placeSplit() {
+  const r = $("vcan").getBoundingClientRect(), st = $("stage").getBoundingClientRect(), l = $("splitLine");
+  l.style.left = (r.left - st.left + r.width * split - 1) + "px"; l.style.top = (r.top - st.top) + "px"; l.style.height = r.height + "px";
+}
+function closeViewer() { $("viewer").hidden = true; state.viewIdx = -1; buildGrid(); }
+$("vclose").onclick = closeViewer;
+$("vprev").onclick = () => openViewer((state.viewIdx - 1 + state.photos.length) % state.photos.length);
+$("vnext").onclick = () => openViewer((state.viewIdx + 1) % state.photos.length);
+$("vskip").onchange = e => { cur().skip = e.target.checked; cur().el.card.classList.toggle("skip", cur().skip); };
+document.addEventListener("keydown", e => {
+  if (!$("viewer").hidden) {
+    if (e.key === "Escape") closeViewer();
+    if (e.key === "ArrowRight") $("vnext").click();
+    if (e.key === "ArrowLeft") $("vprev").click();
+  } else if (e.key === "Escape") closeSheet();
+});
+(() => {
+  // drag the split line; a quick horizontal swipe changes photo
+  const c = $("vcan"); let drag = false, x0 = 0, t0 = 0, pending = 0;
+  const move = e => { const r = c.getBoundingClientRect(); split = clamp((e.clientX - r.left) / r.width, 0, 1); cancelAnimationFrame(pending); pending = requestAnimationFrame(renderViewer); };
+  c.addEventListener("pointerdown", e => { drag = true; x0 = e.clientX; t0 = performance.now(); c.setPointerCapture(e.pointerId); move(e); });
+  c.addEventListener("pointermove", e => { if (drag) move(e); });
+  c.addEventListener("pointerup", e => {
+    drag = false;
+    const dx = e.clientX - x0;
+    if (e.pointerType === "touch" && performance.now() - t0 < 250 && Math.abs(dx) > 60) $(dx < 0 ? "vnext" : "vprev").click();
+  });
+  window.addEventListener("resize", () => { if (!$("viewer").hidden) placeSplit(); });
+})();
+
+/* ---------- sheet (phone) ---------- */
+function openSheet() { $("rail").classList.add("open"); $("scrim").hidden = false; }
+function closeSheet() { $("rail").classList.remove("open"); $("scrim").hidden = true; }
+$("openSheet").onclick = openSheet; $("sheetClose").onclick = closeSheet; $("scrim").onclick = closeSheet;
+
+/* ---------- import ---------- */
+async function addFiles(files) {
+  files = [...files]; if (!files.length) return;
+  if (state.photos.some(p => p.sample)) state.photos = [];
+  let ok = 0; const bad = [];
+  for (const [i, f] of files.entries()) {
+    toast(`Analyse ${i + 1} / ${files.length}`, { progress: i / files.length, stay: true });
+    try {
+      const bm = await decode(f); const thumb = toImageData(bm, 480); bm.close();
+      state.photos.push(makePhoto({ name: f.name, file: f, thumb, id: f.name + f.size + i }));
+      ok++;
+    } catch (e) { bad.push(f.name); }
+  }
+  if (!$("series").dataset.touched) {
+    const d = files[0].lastModified ? new Date(files[0].lastModified) : new Date();
+    $("series").value = "Série " + d.toLocaleDateString("fr-CH");
+  }
+  toast(`${ok} photo${ok > 1 ? "s" : ""} prête${ok > 1 ? "s" : ""}. Choisis un look en haut.` + (bad.length ? ` Illisible${bad.length > 1 ? "s" : ""} : ${bad.join(", ")}.` : ""));
+  buildGrid(); window.scrollTo({ top: 0, behavior: "smooth" });
+}
+$("pick").addEventListener("change", e => { addFiles(e.target.files); e.target.value = ""; });
+$("series").addEventListener("input", e => e.target.dataset.touched = "1");
+document.addEventListener("dragover", e => { e.preventDefault(); $("empty").classList.add("over"); });
+document.addEventListener("dragleave", e => { if (!e.relatedTarget) $("empty").classList.remove("over"); });
+document.addEventListener("drop", e => { e.preventDefault(); $("empty").classList.remove("over"); addFiles(e.dataTransfer.files); });
+$("ab").addEventListener("click", e => { state.showBefore = !state.showBefore; e.currentTarget.setAttribute("aria-pressed", String(state.showBefore)); scheduleRender(); });
+let clearArmed = 0;
+$("clear").addEventListener("click", e => {
+  const b = e.currentTarget;
+  if (!clearArmed) { b.textContent = "Vider la série ?"; clearArmed = setTimeout(() => { b.textContent = "Nouvelle série"; clearArmed = 0; }, 3000); return; }
+  clearTimeout(clearArmed); clearArmed = 0; b.textContent = "Nouvelle série";
+  loadSamples(); $("series").dataset.touched = ""; buildGrid(); toast("Série vidée.");
+});
+
+/* ---------- gear ---------- */
+$("mju").addEventListener("click", () => {
+  state.gear = { ...MJU };
+  state.look = JSON.parse(JSON.stringify(PRESETS.find(p => p.id === "portra400"))); state.lookId = "portra400"; state.strength = .8;
+  syncControls(); markStrip(); changed(); toast("Olympus mju II + Portra 400 chargé.");
+});
+$("learn").addEventListener("click", () => {
+  const set = real().length ? real() : state.photos;
+  const ev = set.reduce((a, p) => a + p.auto.ev, 0) / set.length;
+  const warmth = set.reduce((a, p) => a + (p.auto.wb[0] - p.auto.wb[2]), 0) / set.length;
+  const parts = [];
+  if (Math.abs(ev) >= .2) parts.push(ev > 0 ? `sort sombre d'environ ${ev.toFixed(1)} EV` : `sort clair d'environ ${(-ev).toFixed(1)} EV`);
+  if (Math.abs(warmth) >= .05) parts.push(warmth > 0 ? "tire vers le bleu" : "tire vers le jaune");
+  $("learnOut").textContent = parts.length
+    ? `Sur ${set.length} photos, ton matériel ${parts.join(" et ")}. La correction auto compense déjà photo par photo ; les réglages ci-dessus restent pour ton goût.`
+    : `Sur ${set.length} photos, ton matériel est neutre : rien à compenser.`;
+});
+$("saveLook").addEventListener("click", () => {
+  const n = state.savedLooks.length + 1, id = "mine-" + Date.now();
+  state.savedLooks.push({ ...JSON.parse(JSON.stringify(state.look)), art: false, id, name: "Mon look " + n, desc: "Ton look enregistré." });
+  state.lookId = id; buildStrip(); persist(); toast(`« Mon look ${n} » ajouté à la bande.`);
+});
+$("modeSeg").addEventListener("click", e => { const m = e.target.closest("button")?.dataset.mode; if (m) { state.exportMode = m; paintMode(); persist(); } });
+
+/* ---------- save ---------- */
+async function saveBlob(name, blob) {
+  const dl = await dlP;
+  if (dl) return dl.save({ filename: name, data: blob });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+async function develop(p) {
+  const bm = await decode(p.file); const src = toImageData(bm); bm.close();
+  const out = render(src, buildParams(p), { cell: Math.max(1, Math.round(src.width / 1600)), sharpen: true });
+  const c = document.createElement("canvas"); c.width = out.width; c.height = out.height; c.getContext("2d").putImageData(out, 0, 0);
+  const blob = await new Promise(r => c.toBlob(r, "image/jpeg", .92));
+  return new File([blob], p.name.replace(/\.[^.]+$/, "") + ".jpg", { type: "image/jpeg" });
+}
+let busy = false, queue = null;
+async function exportSeries() {
+  if (busy) return;
+  const list = state.photos.filter(p => p.file && !p.skip);
+  if (!list.length) { toast("Importe d'abord tes photos : les exemples ne s'enregistrent pas."); return; }
+  busy = true; closeSheet();
+  try {
+    const files = [];
+    for (const [i, p] of list.entries()) {
+      toast(`Développement ${i + 1} / ${list.length}`, { progress: i / list.length, stay: true });
+      await new Promise(r => setTimeout(r, 20));
+      files.push(await develop(p));
+    }
+    if (state.exportMode === "zip") {
+      toast("Préparation du ZIP…", { progress: 1, stay: true });
+      const zip = new JSZip(); files.forEach(f => zip.file(f.name, f));
+      const base = ($("series").value.trim() || "Serie").replace(/[\\/:*?"<>|]+/g, "-");
+      await saveBlob(base + ".zip", await zip.generateAsync({ type: "blob" }));
+      toast(`${base}.zip enregistré · ${files.length} photos.`);
+      return;
+    }
+    // photos: share sheet first (installed app / phone browser: one tap → gallery), else one by one
+    if (navigator.canShare && navigator.canShare({ files })) {
+      try { await navigator.share({ files }); toast(`${files.length} photos envoyées vers ta galerie.`); return; }
+      catch (e) { if (e.name === "AbortError") { toast("Partage annulé."); return; } }
+    }
+    queue = { files, i: 0 };
+    await drainQueue();
+  } catch (e) {
+    toast("L'enregistrement a échoué : " + (e.message || e.code || e));
+  } finally { busy = false; }
+}
+async function drainQueue() {
+  const q = queue; if (!q) return;
+  while (q.i < q.files.length) {
+    const f = q.files[q.i];
+    toast(`Photo ${q.i + 1} / ${q.files.length}`, { progress: q.i / q.files.length, stay: true });
+    try { await saveBlob(f.name, f); q.i++; }
+    catch (e) {
+      if (e && e.code === "rate_limited") { await new Promise(r => setTimeout(r, 1200)); continue; }
+      toast(`Arrêté à ${q.i} / ${q.files.length}.`, { progress: q.i / q.files.length, resume: true });
+      return;
+    }
+  }
+  toast(`${q.files.length} photo${q.files.length > 1 ? "s" : ""} enregistrée${q.files.length > 1 ? "s" : ""}.`, { progress: 1 });
+  queue = null;
+}
+$("resume").addEventListener("click", () => { $("toastActs").hidden = true; drainQueue(); });
+["export", "saveTop", "saveDock"].forEach(id => $(id).addEventListener("click", exportSeries));
+
+/* ---------- settings: your account, else this device ---------- */
+let docRef = null, saveTimer = 0;
+const KEY = "labo-serie-v1";
+function snapshot() { return { gear: state.gear, savedLooks: state.savedLooks, look: state.look, lookId: state.lookId, strength: state.strength, exportMode: state.exportMode }; }
+function apply(s) {
+  if (!s) return;
+  if (s.gear) state.gear = { ...state.gear, ...s.gear };
+  if (Array.isArray(s.savedLooks)) state.savedLooks = s.savedLooks;
+  if (s.look) { state.look = { ...state.look, ...s.look }; state.lookId = s.lookId ?? null; }
+  if (typeof s.strength === "number") state.strength = s.strength;
+  if (!isPhone && (s.exportMode === "zip" || s.exportMode === "photos")) state.exportMode = s.exportMode;
+}
+function persist() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async () => {
+    const s = JSON.parse(JSON.stringify(snapshot()));
+    try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {}
+    if (docRef) { try { await docRef.set(s); $("sync").textContent = "Réglages synchronisés sur ton compte"; } catch (e) { $("sync").textContent = "Réglages gardés sur cet appareil"; } }
+  }, 900);
+}
+try { apply(JSON.parse(localStorage.getItem(KEY) || "null")); } catch (e) {}
+$("sync").textContent = "Réglages gardés sur cet appareil";
+
+/* ---------- boot ---------- */
+buildControls(); syncControls(); loadSamples(); buildGrid(); buildStrip();
+
+(async () => {
+  try {
+    if (!window.claude?.use) return;
+    const [d, u] = await Promise.all([window.claude.use("db"), window.claude.use("user")]);
+    if (!d || !u) return;
+    const uid = await u.id(); if (!uid) return;
+    docRef = d.doc("data/users/" + uid + "/labo");
+    const snap = await docRef.get();
+    if (snap.exists) { apply(snap.data()); syncControls(); buildStrip(); scheduleRender(); }
+    $("sync").textContent = "Réglages synchronisés sur ton compte";
+  } catch (e) { /* stays on this device */ }
+})();
+})();
+</script>
+<script>
+if ("serviceWorker" in navigator && location.protocol === "https:") addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+</script>
+</body>
+</html>
