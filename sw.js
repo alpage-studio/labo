@@ -1,7 +1,7 @@
 // Labo de série — hors ligne.
 // La page passe par le réseau d'abord (une mise à jour arrive dès qu'on est en ligne),
 // tout le reste par le cache d'abord. Monter VERSION à chaque publication.
-const VERSION = "labo-1";
+const VERSION = "labo-2";
 const SHELL = [
   "./", "./index.html", "./manifest.webmanifest", "./jszip.min.js",
   "./icon-192.png", "./icon-512.png", "./icon-maskable-512.png", "./apple-touch-icon.png",
