@@ -1,8 +1,8 @@
 {
-  "name": "Labo de série",
+  "name": "Labo Darkroom",
   "short_name": "Labo",
-  "description": "Un look pour toute la pellicule, une correction propre à chaque photo.",
-  "lang": "fr",
+  "description": "One look for the whole roll, a correction for every photo.",
+  "lang": "en",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

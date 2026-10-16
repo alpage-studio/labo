@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Labo de série</title>
-<meta name="description" content="Un look pour toute la pellicule, une correction propre à chaque photo.">
+<title>Labo Darkroom</title>
+<meta name="description" content="One look for the whole roll, a correction for every photo.">
 <meta name="theme-color" content="#110e0c">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -203,109 +203,109 @@ input[type=range]{width:100%;accent-color:var(--amber);margin:0;min-height:28px}
   <div class="wrap">
     <div class="brand">
       <span class="lamp" aria-hidden="true"></span>
-      <h1 class="word" aria-label="Labo de série">Labo</h1>
-      <span class="sub" aria-hidden="true"><span>de série</span><span>▸ 36 poses</span></span>
+      <h1 class="word" aria-label="Labo darkroom">Labo</h1>
+      <span class="sub" aria-hidden="true"><span>batch darkroom</span><span>▸ 36 exp.</span></span>
     </div>
     <span class="count" id="count"></span>
     <div class="top-actions">
-      <label class="btn" for="pick">Importer</label>
-      <button class="btn primary" id="saveTop" type="button">Enregistrer</button>
+      <label class="btn" for="pick">Import</label>
+      <button class="btn primary" id="saveTop" type="button">Save</button>
     </div>
   </div>
 </header>
 <input id="pick" type="file" multiple hidden accept="image/*,.jpg,.jpeg,.png,.webp,.heic,.cr2,.cr3,.nef,.arw,.raf,.dng,.orf,.rw2,.pef,.srw">
 
-<section class="lightbox chrome" aria-label="Choisir un look">
+<section class="lightbox chrome" aria-label="Pick a look">
   <div class="strip" id="strip" role="group" aria-label="Looks"></div>
   <p class="lookdesc" id="lookDesc"></p>
 </section>
 
 <main class="wrap work">
-  <section class="bench" aria-label="Photos de la série">
+  <section class="bench" aria-label="Photos in this roll">
     <div id="empty" class="envelope">
-      <div class="env-head"><span>Bon de développement<br>Labo de série · C-41</span><span class="stamp">Prêt</span></div>
-      <h2>Ta pellicule en trois gestes</h2>
+      <div class="env-head"><span>Processing order<br>Labo darkroom · C-41</span><span class="stamp">Ready</span></div>
+      <h2>Your roll in three moves</h2>
       <ol class="order">
-        <li><span class="n">1</span><span><b>Importe</b> toute la série d'un coup.</span></li>
-        <li><span class="n">2</span><span><b>Choisis un look</b> sur la bande du haut. Il est le même pour toutes ; chaque photo est corrigée à part.</span></li>
-        <li><span class="n">3</span><span><b>Enregistre.</b> Sur téléphone, les photos vont dans ta galerie ; sur ordinateur, en ZIP ou en fichiers séparés.</span></li>
+        <li><span class="n">1</span><span><b>Import</b> the whole roll at once.</span></li>
+        <li><span class="n">2</span><span><b>Pick a look</b> on the strip above. It's the same for every frame; each photo is corrected on its own.</span></li>
+        <li><span class="n">3</span><span><b>Save.</b> On a phone, photos go to your gallery; on a computer, as a ZIP or separate files.</span></li>
       </ol>
-      <label class="btn primary big" for="pick">Importer des photos</label>
-      <p class="fine">JPEG, PNG, WebP ou RAW (aperçu intégré). Rien n'est envoyé : tout se calcule sur ton appareil. En dessous, quatre vues d'exemple.</p>
+      <label class="btn primary big" for="pick">Import photos</label>
+      <p class="fine">JPEG, PNG, WebP or RAW (embedded preview). Nothing is uploaded: everything runs on your device. Below, four sample frames.</p>
     </div>
     <div class="bar">
       <span class="lbl" id="barLbl"></span>
       <button id="ab" class="btn ghost small" type="button" aria-pressed="false">Original</button>
-      <button id="clear" class="btn ghost small" type="button" hidden>Nouvelle série</button>
+      <button id="clear" class="btn ghost small" type="button" hidden>New roll</button>
     </div>
     <div id="grid" class="grid"></div>
   </section>
 
-  <aside class="rail" id="rail" aria-label="Réglages">
-    <div class="sheet-head"><span>Réglages</span><button id="sheetClose" class="btn small" type="button">Terminé</button></div>
+  <aside class="rail" id="rail" aria-label="Settings">
+    <div class="sheet-head"><span>Settings</span><button id="sheetClose" class="btn small" type="button">Done</button></div>
     <section>
-      <h2>Ajuster le look</h2>
+      <h2>Adjust the look</h2>
       <div id="lookSliders"></div>
-      <button id="saveLook" class="btn ghost small" type="button">Garder ce look</button>
+      <button id="saveLook" class="btn ghost small" type="button">Keep this look</button>
     </section>
     <section>
-      <h2>Correction auto</h2>
-      <p class="hint">Exposition, dominante, teint de peau, contraste : analysés sur chaque photo avant le look.</p>
+      <h2>Auto correction</h2>
+      <p class="hint">Exposure, colour cast, skin tone and contrast are analysed on every photo before the look.</p>
       <div id="autoSliders"></div>
     </section>
     <details id="gearBox">
-      <summary>Mon matériel <span class="gearname" id="gearName"></span></summary>
+      <summary>My gear <span class="gearname" id="gearName"></span></summary>
       <div class="stack">
-        <button id="mju" class="btn small wide" type="button">Charger Olympus mju II + Portra 400</button>
-        <div class="field"><label for="gearInput">Appareil / pellicule</label><input id="gearInput" type="text" placeholder="ex. Olympus mju II · Portra 400"></div>
+        <button id="mju" class="btn small wide" type="button">Load Olympus mju II + Portra 400</button>
+        <div class="field"><label for="gearInput">Camera / film</label><input id="gearInput" type="text" placeholder="e.g. Olympus mju II · Portra 400"></div>
       </div>
       <div id="gearSliders"></div>
-      <button id="learn" class="btn ghost small" type="button">Apprendre de cette série</button>
+      <button id="learn" class="btn ghost small" type="button">Learn from this roll</button>
       <p class="hint" id="learnOut" style="margin-top:8px"></p>
     </details>
     <section>
-      <h2>Enregistrer</h2>
-      <div class="field"><label for="series">Nom de la série</label><input id="series" type="text" value="Série"></div>
+      <h2>Save</h2>
+      <div class="field"><label for="series">Roll name</label><input id="series" type="text" value="Roll"></div>
       <div class="seg" id="modeSeg" role="group" aria-label="Format">
-        <button type="button" data-mode="photos" aria-pressed="false">Photos séparées</button>
-        <button type="button" data-mode="zip" aria-pressed="false">Un fichier ZIP</button>
+        <button type="button" data-mode="photos" aria-pressed="false">Separate photos</button>
+        <button type="button" data-mode="zip" aria-pressed="false">One ZIP file</button>
       </div>
-      <button id="export" class="btn primary wide" type="button">Enregistrer la série</button>
+      <button id="export" class="btn primary wide" type="button">Save the roll</button>
       <span id="sync" class="sync"></span>
     </section>
   </aside>
 </main>
 
 <nav class="dock chrome" aria-label="Actions">
-  <label class="btn" for="pick">Importer</label>
-  <button id="openSheet" class="btn" type="button">Réglages</button>
-  <button id="saveDock" class="btn primary" type="button">Enregistrer</button>
+  <label class="btn" for="pick">Import</label>
+  <button id="openSheet" class="btn" type="button">Settings</button>
+  <button id="saveDock" class="btn primary" type="button">Save</button>
 </nav>
 <div class="scrim" id="scrim" hidden></div>
 
 <div class="toast chrome" id="toast" role="status" hidden>
   <p id="toastMsg"></p>
   <div class="prog" id="prog" hidden><i></i></div>
-  <div class="row" id="toastActs" hidden><button id="resume" class="btn small primary" type="button">Continuer</button></div>
+  <div class="row" id="toastActs" hidden><button id="resume" class="btn small primary" type="button">Continue</button></div>
 </div>
 
-<div id="viewer" class="viewer" hidden role="dialog" aria-modal="true" aria-label="Photo en grand">
+<div id="viewer" class="viewer" hidden role="dialog" aria-modal="true" aria-label="Photo, full size">
   <div class="vhead">
     <span class="vname" id="vname"></span>
-    <button id="vprev" class="btn ghost small" type="button" aria-label="Photo précédente">←</button>
-    <button id="vnext" class="btn ghost small" type="button" aria-label="Photo suivante">→</button>
-    <button id="vclose" class="btn small" type="button">Fermer</button>
+    <button id="vprev" class="btn ghost small" type="button" aria-label="Previous photo">←</button>
+    <button id="vnext" class="btn ghost small" type="button" aria-label="Next photo">→</button>
+    <button id="vclose" class="btn small" type="button">Close</button>
   </div>
   <div class="stage" id="stage">
     <canvas id="vcan"></canvas>
     <div class="split-line" id="splitLine"></div>
-    <span class="vtag" id="tagBefore">AVANT</span>
-    <span class="vtag" id="tagAfter">APRÈS</span>
+    <span class="vtag" id="tagBefore">BEFORE</span>
+    <span class="vtag" id="tagAfter">AFTER</span>
   </div>
   <div class="vctl">
     <div class="notes" id="vnotes"></div>
     <div id="nudgeSliders" style="display:contents"></div>
-    <label class="check"><input type="checkbox" id="vskip"> Ne pas enregistrer</label>
+    <label class="check"><input type="checkbox" id="vskip"> Skip when saving</label>
   </div>
 </div>
 
@@ -329,23 +329,23 @@ function hash(x, y) {
 /* ---------- looks ---------- */
 const Z = [0, 0, 0];
 const PRESETS = [
-  { id: "naturel", name: "Naturel", contrast: .1, sat: .05, warm: 0, fade: 0, grain: 0, vign: .1, tint: 0, shadows: 0, highlights: 0, ss: Z, sh: Z, bw: false },
+  { id: "naturel", name: "Natural", contrast: .1, sat: .05, warm: 0, fade: 0, grain: 0, vign: .1, tint: 0, shadows: 0, highlights: 0, ss: Z, sh: Z, bw: false },
   // Kodak Portra 400: soft contrast, long highlight roll-off, peach skin, slightly cyan-green shadows, fine grain (scans already carry real grain)
-  { id: "portra400", name: "Portra 400", desc: "Le rendu Portra : contraste doux, peau pêche, hautes lumières qui ne brûlent pas.", contrast: -.08, sat: -.06, warm: .22, fade: .18, grain: .12, vign: 0, tint: -.04, shadows: .12, highlights: -.28, ss: [-.08, .03, .07], sh: [.14, .07, -.06], bw: false },
-  { id: "film", name: "Film chaud", contrast: .15, sat: -.08, warm: .35, fade: .35, grain: .25, vign: .25, tint: -.05, shadows: .1, highlights: -.15, ss: [.05, 0, -.06], sh: [.16, .05, -.12], bw: false },
-  { id: "cine", name: "Ciné", contrast: .35, sat: -.1, warm: .05, fade: .15, grain: .15, vign: .35, tint: 0, shadows: 0, highlights: -.1, ss: [-.3, .05, .35], sh: [.3, .1, -.25], bw: false },
-  { id: "fane", name: "Fané", contrast: -.2, sat: -.25, warm: .1, fade: .7, grain: .3, vign: .15, tint: 0, shadows: .15, highlights: -.1, ss: [0, .05, .12], sh: [.1, .05, 0], bw: false },
-  { id: "eclat", name: "Éclatant", contrast: .3, sat: .35, warm: .05, fade: 0, grain: 0, vign: .2, tint: 0, shadows: .15, highlights: -.2, ss: Z, sh: Z, bw: false },
-  { id: "nb", name: "Noir & blanc", contrast: .45, sat: 0, warm: 0, fade: .15, grain: .45, vign: .3, tint: 0, shadows: .05, highlights: -.1, ss: Z, sh: Z, bw: true },
+  { id: "portra400", name: "Portra 400", desc: "The Portra rendering: soft contrast, peachy skin, highlights that never burn out.", contrast: -.08, sat: -.06, warm: .22, fade: .18, grain: .12, vign: 0, tint: -.04, shadows: .12, highlights: -.28, ss: [-.08, .03, .07], sh: [.14, .07, -.06], bw: false },
+  { id: "film", name: "Warm film", contrast: .15, sat: -.08, warm: .35, fade: .35, grain: .25, vign: .25, tint: -.05, shadows: .1, highlights: -.15, ss: [.05, 0, -.06], sh: [.16, .05, -.12], bw: false },
+  { id: "cine", name: "Cinema", contrast: .35, sat: -.1, warm: .05, fade: .15, grain: .15, vign: .35, tint: 0, shadows: 0, highlights: -.1, ss: [-.3, .05, .35], sh: [.3, .1, -.25], bw: false },
+  { id: "fane", name: "Faded", contrast: -.2, sat: -.25, warm: .1, fade: .7, grain: .3, vign: .15, tint: 0, shadows: .15, highlights: -.1, ss: [0, .05, .12], sh: [.1, .05, 0], bw: false },
+  { id: "eclat", name: "Vivid", contrast: .3, sat: .35, warm: .05, fade: 0, grain: 0, vign: .2, tint: 0, shadows: .15, highlights: -.2, ss: Z, sh: Z, bw: false },
+  { id: "nb", name: "Black & white", contrast: .45, sat: 0, warm: 0, fade: .15, grain: .45, vign: .3, tint: 0, shadows: .05, highlights: -.1, ss: Z, sh: Z, bw: true },
   // Portra 400 — creative variants (art: true → own row)
-  { art: true, id: "p-pastel", name: "Surex pastel", desc: "Portra exposée à 200 : lumineuse, aérienne, couleurs crème et pastel.", ev: .45, contrast: -.25, sat: -.2, warm: .15, fade: .3, grain: .1, vign: 0, tint: -.03, shadows: .3, highlights: -.35, ss: [0, .04, .07], sh: [.08, .06, 0], bw: false },
-  { art: true, id: "p-push", name: "Poussée +2", desc: "Développement poussé : contraste, grain marqué, rouges et oranges dans les ombres, ton éditorial.", ev: 0, contrast: .3, sat: .15, warm: .3, fade: .05, grain: .4, vign: .2, tint: 0, shadows: 0, highlights: -.1, ss: [.25, .08, -.12], sh: [.1, .04, -.06], bw: false },
-  { art: true, id: "p-cross", name: "Croisé E6", desc: "Négatif développé comme une diapo : contraste dur, ombres bleu-cyan, hautes lumières jaune-vert.", ev: .1, contrast: .5, sat: .3, warm: 0, fade: 0, grain: .25, vign: .3, tint: -.15, shadows: -.05, highlights: -.05, ss: [-.2, .05, .35], sh: [.2, .25, -.3], bw: false },
-  { art: true, id: "p-nuit", name: "Flash de nuit", desc: "Le mode nuit du mju II : sujet chaud au flash, fond sombre bleu-vert, coins lourds.", ev: -.2, contrast: .35, sat: .1, warm: .1, fade: 0, grain: .3, vign: .4, tint: 0, shadows: -.15, highlights: -.1, ss: [-.15, .05, .2], sh: [.15, .05, -.1], bw: false },
-  { art: true, id: "p-webb", name: "Couleur de rue", desc: "Esprit Alex Webb : ombres profondes, quelques couleurs vives contre des tons sourds.", ev: -.1, contrast: .4, sat: .3, warm: .1, fade: 0, grain: .1, vign: .15, tint: 0, shadows: -.2, highlights: -.15, ss: [-.05, 0, .1], sh: [.1, .05, -.04], bw: false },
-  { art: true, id: "p-tirage", name: "Tirage 90s", desc: "Tirage de labo de quartier : chaud, un peu passé, grain visible, souvenir d'été.", ev: .1, contrast: .1, sat: -.05, warm: .5, fade: .4, grain: .3, vign: .25, tint: 0, shadows: .1, highlights: -.2, ss: [.1, .02, -.1], sh: [.18, .1, -.15], bw: false },
+  { art: true, id: "p-pastel", name: "Overexposed pastel", desc: "Portra shot at 200: bright, airy, creamy pastel colours.", ev: .45, contrast: -.25, sat: -.2, warm: .15, fade: .3, grain: .1, vign: 0, tint: -.03, shadows: .3, highlights: -.35, ss: [0, .04, .07], sh: [.08, .06, 0], bw: false },
+  { art: true, id: "p-push", name: "Pushed +2", desc: "Push processing: more contrast, visible grain, reds and oranges in the shadows, an editorial feel.", ev: 0, contrast: .3, sat: .15, warm: .3, fade: .05, grain: .4, vign: .2, tint: 0, shadows: 0, highlights: -.1, ss: [.25, .08, -.12], sh: [.1, .04, -.06], bw: false },
+  { art: true, id: "p-cross", name: "Cross-processed", desc: "A negative developed as slide film: hard contrast, cyan-blue shadows, yellow-green highlights.", ev: .1, contrast: .5, sat: .3, warm: 0, fade: 0, grain: .25, vign: .3, tint: -.15, shadows: -.05, highlights: -.05, ss: [-.2, .05, .35], sh: [.2, .25, -.3], bw: false },
+  { art: true, id: "p-nuit", name: "Night flash", desc: "The mju II night mode: a warm subject in the flash, a dark blue-green background, heavy corners.", ev: -.2, contrast: .35, sat: .1, warm: .1, fade: 0, grain: .3, vign: .4, tint: 0, shadows: -.15, highlights: -.1, ss: [-.15, .05, .2], sh: [.15, .05, -.1], bw: false },
+  { art: true, id: "p-webb", name: "Street colour", desc: "In the spirit of Alex Webb: deep shadows, a few vivid colours against muted tones.", ev: -.1, contrast: .4, sat: .3, warm: .1, fade: 0, grain: .1, vign: .15, tint: 0, shadows: -.2, highlights: -.15, ss: [-.05, 0, .1], sh: [.1, .05, -.04], bw: false },
+  { art: true, id: "p-tirage", name: "90s print", desc: "A corner-lab print: warm, slightly faded, visible grain, a summer memory.", ev: .1, contrast: .1, sat: -.05, warm: .5, fade: .4, grain: .3, vign: .25, tint: 0, shadows: .1, highlights: -.2, ss: [.1, .02, -.1], sh: [.18, .1, -.15], bw: false },
 ];
-const LOOK_SLIDERS = [["contrast", "Contraste", -1, 1], ["sat", "Saturation", -1, 1], ["warm", "Chaleur", -1, 1], ["fade", "Fondu", 0, 1], ["grain", "Grain", 0, 1], ["vign", "Vignette", 0, 1]];
+const LOOK_SLIDERS = [["contrast", "Contrast", -1, 1], ["sat", "Saturation", -1, 1], ["warm", "Warmth", -1, 1], ["fade", "Fade", 0, 1], ["grain", "Grain", 0, 1], ["vign", "Vignette", 0, 1]];
 
 // Olympus mju II (35 mm f/2.8): dark corners, lab scans arrive already sharpened, Portra tolerates a little extra light
 const MJU = { name: "Olympus mju II · Portra 400", ev: .1, warm: .05, lens: .2, sharpen: .15 };
@@ -402,17 +402,17 @@ function analyse(img) {
   const hl = p97 > .97 ? -.3 : 0;
 
   const notes = [];
-  if (ev >= .25) notes.push(["Sous-exposée +" + ev.toFixed(1) + " EV", "w"]);
-  if (ev <= -.25) notes.push(["Surexposée " + ev.toFixed(1) + " EV", "w"]);
-  if (wb[2] > 1.06 && wb[2] > wb[0]) notes.push(["Dominante chaude", "w"]);
-  else if (wb[0] > 1.06) notes.push(["Dominante froide", "w"]);
-  if (wb[1] > 1.04) notes.push(["Dominante magenta", "w"]);
-  else if (wb[1] < .96) notes.push(["Dominante verte", "w"]);
-  if (hi - lo < .7) notes.push(["Contraste faible", "w"]);
-  if (sh > 0) notes.push(["Ombres bouchées", "w"]);
-  if (hl < 0) notes.push(["Ciel brûlé", "w"]);
-  if (!notes.length) notes.push(["Rien à corriger", "ok"]);
-  if (skin) notes.push(["Peau détectée · teint ajusté", "ok"]);
+  if (ev >= .25) notes.push(["Underexposed +" + ev.toFixed(1) + " EV", "w"]);
+  if (ev <= -.25) notes.push(["Overexposed " + ev.toFixed(1) + " EV", "w"]);
+  if (wb[2] > 1.06 && wb[2] > wb[0]) notes.push(["Warm cast", "w"]);
+  else if (wb[0] > 1.06) notes.push(["Cool cast", "w"]);
+  if (wb[1] > 1.04) notes.push(["Magenta cast", "w"]);
+  else if (wb[1] < .96) notes.push(["Green cast", "w"]);
+  if (hi - lo < .7) notes.push(["Low contrast", "w"]);
+  if (sh > 0) notes.push(["Crushed shadows", "w"]);
+  if (hl < 0) notes.push(["Blown sky", "w"]);
+  if (!notes.length) notes.push(["Nothing to fix", "ok"]);
+  if (skin) notes.push(["Skin found · tone adjusted", "ok"]);
   return { ev, wb, bp, wp, sh, hl, notes };
 }
 
@@ -529,10 +529,10 @@ function scene(seed, opts) {
 }
 function loadSamples() {
   const defs = [
-    ["Exemple · lac au matin", 1, { sky: ["#6f9bd6", "#f0c99a"], sun: "#fff3d6", sx: .7, hills: ["#55627a", "#3c4a3f", "#26302a"], ev: -1.1, cast: [.86, .96, 1.18] }],
-    ["Exemple · plein soleil", 2, { sky: ["#4f86d8", "#cfe2f2"], sun: "#ffffff", sx: .25, hills: ["#7c8b6a", "#5a6b45", "#3d4a2c"], ev: .75, cast: [1.06, 1, .9] }],
-    ["Exemple · jour de brume", 3, { sky: ["#9fb0bd", "#d9dcd6"], sun: "#f4f1e6", sx: .5, hills: ["#8a978d", "#6f7d71", "#566358"], ev: 0, cast: [.95, 1.08, .95], flat: true }],
-    ["Exemple · fin de journée", 4, { sky: ["#3e4f86", "#f2a868"], sun: "#ffd9a0", sx: .55, hills: ["#5b4a5c", "#3f3442", "#251f29"], ev: 0, cast: [1, 1, 1] }],
+    ["Sample · lake at dawn", 1, { sky: ["#6f9bd6", "#f0c99a"], sun: "#fff3d6", sx: .7, hills: ["#55627a", "#3c4a3f", "#26302a"], ev: -1.1, cast: [.86, .96, 1.18] }],
+    ["Sample · full sun", 2, { sky: ["#4f86d8", "#cfe2f2"], sun: "#ffffff", sx: .25, hills: ["#7c8b6a", "#5a6b45", "#3d4a2c"], ev: .75, cast: [1.06, 1, .9] }],
+    ["Sample · misty day", 3, { sky: ["#9fb0bd", "#d9dcd6"], sun: "#f4f1e6", sx: .5, hills: ["#8a978d", "#6f7d71", "#566358"], ev: 0, cast: [.95, 1.08, .95], flat: true }],
+    ["Sample · late afternoon", 4, { sky: ["#3e4f86", "#f2a868"], sun: "#ffd9a0", sx: .55, hills: ["#5b4a5c", "#3f3442", "#251f29"], ev: 0, cast: [1, 1, 1] }],
   ];
   state.photos = defs.map(([name, seed, o], i) => makePhoto({ name, file: null, sample: true, thumb: scene(seed, o), id: "s" + i }));
 }
@@ -568,8 +568,8 @@ const hero = () => state.photos.find(p => !p.skip) || state.photos[0];
 function stripLooks() {
   return [
     ...PRESETS.filter(p => !p.art),
-    { sep: "Portra · créatif" }, ...PRESETS.filter(p => p.art),
-    ...(state.savedLooks.length ? [{ sep: "Mes looks" }, ...state.savedLooks] : []),
+    { sep: "Portra · creative" }, ...PRESETS.filter(p => p.art),
+    ...(state.savedLooks.length ? [{ sep: "My looks" }, ...state.savedLooks] : []),
   ];
 }
 function buildStrip() {
@@ -593,7 +593,7 @@ function buildStrip() {
 function markStrip() {
   $("strip").querySelectorAll(".look-item").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.id === state.lookId)));
   const l = stripLooks().find(x => x.id === state.lookId);
-  $("lookDesc").textContent = state.lookId ? (l?.desc || l?.name || "") : "Look ajusté à la main · « Garder ce look » pour le retrouver dans la bande.";
+  $("lookDesc").textContent = state.lookId ? (l?.desc || l?.name || "") : "Hand-tuned look · Keep this look to find it on the strip again.";
 }
 let stripGen = 0;
 async function paintStrip() {
@@ -615,10 +615,10 @@ async function paintStrip() {
 /* ---------- grid ---------- */
 function cardFor(p, idx) {
   const card = document.createElement("button");
-  card.type = "button"; card.className = "card"; card.setAttribute("aria-label", "Ouvrir " + p.name);
+  card.type = "button"; card.className = "card"; card.setAttribute("aria-label", "Open " + p.name);
   const fr = document.createElement("div"); fr.className = "frame";
   const cv = document.createElement("canvas"); cv.width = p.thumb.width; cv.height = p.thumb.height; fr.append(cv);
-  if (p.sample) { const t = document.createElement("span"); t.className = "tag"; t.textContent = "EXEMPLE"; fr.append(t); }
+  if (p.sample) { const t = document.createElement("span"); t.className = "tag"; t.textContent = "SAMPLE"; fr.append(t); }
   const reb = document.createElement("div"); reb.className = "rebate";
   const fn = document.createElement("span"); fn.className = "fn"; fn.textContent = `▸ ${idx + 1}`;
   const nm = document.createElement("span"); nm.className = "name"; nm.textContent = p.name;
@@ -631,16 +631,16 @@ function cardFor(p, idx) {
 }
 function paintNotes(box, p) {
   box.replaceChildren(...p.auto.notes.map(([t, k]) => { const s = document.createElement("span"); s.className = "note " + k; s.textContent = t; return s; }));
-  if (p.nudge.ev || p.nudge.warm) { const s = document.createElement("span"); s.className = "note"; s.textContent = "Retouchée"; box.append(s); }
+  if (p.nudge.ev || p.nudge.warm) { const s = document.createElement("span"); s.className = "note"; s.textContent = "Retouched"; box.append(s); }
 }
 function buildGrid() {
   $("grid").replaceChildren(...state.photos.map(cardFor));
   const n = real().length;
   $("empty").hidden = n > 0; $("clear").hidden = n === 0;
   $("count").textContent = n ? `${n} photo${n > 1 ? "s" : ""}` : "";
-  $("barLbl").textContent = n ? "Planche contact · touche une vue pour comparer" : "Vues d'exemple";
+  $("barLbl").textContent = n ? "Contact sheet · tap a frame to compare" : "Sample frames";
   const k = state.photos.filter(p => p.file && !p.skip).length;
-  ["saveTop", "saveDock"].forEach(id => $(id).textContent = k ? `Enregistrer ${k}` : "Enregistrer");
+  ["saveTop", "saveDock"].forEach(id => $(id).textContent = k ? `Save ${k}` : "Save");
   scheduleRender(); paintStrip();
 }
 let gen = 0, raf = 0;
@@ -670,19 +670,19 @@ function slider(parent, id, label, min, max, get, set, step = .01, fmt = v => (v
 const lookCtl = []; let gearCtl = [], nudgeCtl = [], strengthCtl;
 function buildControls() {
   LOOK_SLIDERS.forEach(([k, label, mn, mx]) => lookCtl.push(slider($("lookSliders"), "look-" + k, label, mn, mx, () => state.look[k], v => { state.look[k] = v; state.lookId = null; markStrip(); changed(); })));
-  strengthCtl = slider($("autoSliders"), "strength", "Intensité", 0, 1, () => state.strength, v => { state.strength = v; changed(); }, .01, v => Math.round(v * 100) + "%");
+  strengthCtl = slider($("autoSliders"), "strength", "Strength", 0, 1, () => state.strength, v => { state.strength = v; changed(); }, .01, v => Math.round(v * 100) + "%");
   const gs = $("gearSliders"), ev1 = v => (v > 0 ? "+" : "") + v.toFixed(1);
   gearCtl = [
-    slider(gs, "g-ev", "Expo de base", -1, 1, () => state.gear.ev, v => { state.gear.ev = v; changed(); }, .1, ev1),
-    slider(gs, "g-warm", "Couleur de base", -1, 1, () => state.gear.warm, v => { state.gear.warm = v; changed(); }),
-    slider(gs, "g-lens", "Coins sombres", 0, 1, () => state.gear.lens, v => { state.gear.lens = v; changed(); }),
-    slider(gs, "g-sharp", "Netteté", 0, 1, () => state.gear.sharpen, v => { state.gear.sharpen = v; changed(); }),
+    slider(gs, "g-ev", "Base exposure", -1, 1, () => state.gear.ev, v => { state.gear.ev = v; changed(); }, .1, ev1),
+    slider(gs, "g-warm", "Base colour", -1, 1, () => state.gear.warm, v => { state.gear.warm = v; changed(); }),
+    slider(gs, "g-lens", "Dark corners", 0, 1, () => state.gear.lens, v => { state.gear.lens = v; changed(); }),
+    slider(gs, "g-sharp", "Sharpness", 0, 1, () => state.gear.sharpen, v => { state.gear.sharpen = v; changed(); }),
   ];
   $("gearInput").addEventListener("input", e => { state.gear.name = e.target.value; paintGearName(); persist(); });
   const nz = $("nudgeSliders");
   nudgeCtl = [
-    slider(nz, "n-ev", "Exposition", -2, 2, () => cur()?.nudge.ev ?? 0, v => { cur().nudge.ev = v; changed(true); }, .1, ev1),
-    slider(nz, "n-warm", "Chaleur", -1, 1, () => cur()?.nudge.warm ?? 0, v => { cur().nudge.warm = v; changed(true); }),
+    slider(nz, "n-ev", "Exposure", -2, 2, () => cur()?.nudge.ev ?? 0, v => { cur().nudge.ev = v; changed(true); }, .1, ev1),
+    slider(nz, "n-warm", "Warmth", -1, 1, () => cur()?.nudge.warm ?? 0, v => { cur().nudge.warm = v; changed(true); }),
   ];
 }
 function paintGearName() { $("gearName").textContent = state.gear.name ? "· " + state.gear.name : ""; }
@@ -769,7 +769,7 @@ async function addFiles(files) {
   if (state.photos.some(p => p.sample)) state.photos = [];
   let ok = 0; const bad = [];
   for (const [i, f] of files.entries()) {
-    toast(`Analyse ${i + 1} / ${files.length}`, { progress: i / files.length, stay: true });
+    toast(`Analysing ${i + 1} / ${files.length}`, { progress: i / files.length, stay: true });
     try {
       const bm = await decode(f); const thumb = toImageData(bm, 480); bm.close();
       state.photos.push(makePhoto({ name: f.name, file: f, thumb, id: f.name + f.size + i }));
@@ -778,9 +778,9 @@ async function addFiles(files) {
   }
   if (!$("series").dataset.touched) {
     const d = files[0].lastModified ? new Date(files[0].lastModified) : new Date();
-    $("series").value = "Série " + d.toLocaleDateString("fr-CH");
+    $("series").value = "Roll " + d.toLocaleDateString("en-GB");
   }
-  toast(`${ok} photo${ok > 1 ? "s" : ""} prête${ok > 1 ? "s" : ""}. Choisis un look en haut.` + (bad.length ? ` Illisible${bad.length > 1 ? "s" : ""} : ${bad.join(", ")}.` : ""));
+  toast(`${ok} photo${ok > 1 ? "s" : ""} ready. Pick a look above.` + (bad.length ? ` Could not read: ${bad.join(", ")}.` : ""));
   buildGrid(); window.scrollTo({ top: 0, behavior: "smooth" });
 }
 $("pick").addEventListener("change", e => { addFiles(e.target.files); e.target.value = ""; });
@@ -792,32 +792,32 @@ $("ab").addEventListener("click", e => { state.showBefore = !state.showBefore; e
 let clearArmed = 0;
 $("clear").addEventListener("click", e => {
   const b = e.currentTarget;
-  if (!clearArmed) { b.textContent = "Vider la série ?"; clearArmed = setTimeout(() => { b.textContent = "Nouvelle série"; clearArmed = 0; }, 3000); return; }
-  clearTimeout(clearArmed); clearArmed = 0; b.textContent = "Nouvelle série";
-  loadSamples(); $("series").dataset.touched = ""; buildGrid(); toast("Série vidée.");
+  if (!clearArmed) { b.textContent = "Clear the roll?"; clearArmed = setTimeout(() => { b.textContent = "New roll"; clearArmed = 0; }, 3000); return; }
+  clearTimeout(clearArmed); clearArmed = 0; b.textContent = "New roll";
+  loadSamples(); $("series").dataset.touched = ""; buildGrid(); toast("Roll cleared.");
 });
 
 /* ---------- gear ---------- */
 $("mju").addEventListener("click", () => {
   state.gear = { ...MJU };
   state.look = JSON.parse(JSON.stringify(PRESETS.find(p => p.id === "portra400"))); state.lookId = "portra400"; state.strength = .8;
-  syncControls(); markStrip(); changed(); toast("Olympus mju II + Portra 400 chargé.");
+  syncControls(); markStrip(); changed(); toast("Olympus mju II + Portra 400 loaded.");
 });
 $("learn").addEventListener("click", () => {
   const set = real().length ? real() : state.photos;
   const ev = set.reduce((a, p) => a + p.auto.ev, 0) / set.length;
   const warmth = set.reduce((a, p) => a + (p.auto.wb[0] - p.auto.wb[2]), 0) / set.length;
   const parts = [];
-  if (Math.abs(ev) >= .2) parts.push(ev > 0 ? `sort sombre d'environ ${ev.toFixed(1)} EV` : `sort clair d'environ ${(-ev).toFixed(1)} EV`);
-  if (Math.abs(warmth) >= .05) parts.push(warmth > 0 ? "tire vers le bleu" : "tire vers le jaune");
+  if (Math.abs(ev) >= .2) parts.push(ev > 0 ? `comes out about ${ev.toFixed(1)} EV dark` : `comes out about ${(-ev).toFixed(1)} EV bright`);
+  if (Math.abs(warmth) >= .05) parts.push(warmth > 0 ? "leans blue" : "leans yellow");
   $("learnOut").textContent = parts.length
-    ? `Sur ${set.length} photos, ton matériel ${parts.join(" et ")}. La correction auto compense déjà photo par photo ; les réglages ci-dessus restent pour ton goût.`
-    : `Sur ${set.length} photos, ton matériel est neutre : rien à compenser.`;
+    ? `Across ${set.length} photos, your gear ${parts.join(" and ")}. Auto correction already compensates photo by photo; the settings above are for your taste.`
+    : `Across ${set.length} photos, your gear is neutral: nothing to compensate.`;
 });
 $("saveLook").addEventListener("click", () => {
   const n = state.savedLooks.length + 1, id = "mine-" + Date.now();
-  state.savedLooks.push({ ...JSON.parse(JSON.stringify(state.look)), art: false, id, name: "Mon look " + n, desc: "Ton look enregistré." });
-  state.lookId = id; buildStrip(); persist(); toast(`« Mon look ${n} » ajouté à la bande.`);
+  state.savedLooks.push({ ...JSON.parse(JSON.stringify(state.look)), art: false, id, name: "My look " + n, desc: "Your saved look." });
+  state.lookId = id; buildStrip(); persist(); toast(`“My look ${n}” added to the strip.`);
 });
 $("modeSeg").addEventListener("click", e => { const m = e.target.closest("button")?.dataset.mode; if (m) { state.exportMode = m; paintMode(); persist(); } });
 
@@ -839,32 +839,32 @@ let busy = false, queue = null;
 async function exportSeries() {
   if (busy) return;
   const list = state.photos.filter(p => p.file && !p.skip);
-  if (!list.length) { toast("Importe d'abord tes photos : les exemples ne s'enregistrent pas."); return; }
+  if (!list.length) { toast("Import your photos first: the samples are not saved."); return; }
   busy = true; closeSheet();
   try {
     const files = [];
     for (const [i, p] of list.entries()) {
-      toast(`Développement ${i + 1} / ${list.length}`, { progress: i / list.length, stay: true });
+      toast(`Developing ${i + 1} / ${list.length}`, { progress: i / list.length, stay: true });
       await new Promise(r => setTimeout(r, 20));
       files.push(await develop(p));
     }
     if (state.exportMode === "zip") {
-      toast("Préparation du ZIP…", { progress: 1, stay: true });
+      toast("Packing the ZIP…", { progress: 1, stay: true });
       const zip = new JSZip(); files.forEach(f => zip.file(f.name, f));
       const base = ($("series").value.trim() || "Serie").replace(/[\\/:*?"<>|]+/g, "-");
       await saveBlob(base + ".zip", await zip.generateAsync({ type: "blob" }));
-      toast(`${base}.zip enregistré · ${files.length} photos.`);
+      toast(`${base}.zip saved · ${files.length} photos.`);
       return;
     }
     // photos: share sheet first (installed app / phone browser: one tap → gallery), else one by one
     if (navigator.canShare && navigator.canShare({ files })) {
-      try { await navigator.share({ files }); toast(`${files.length} photos envoyées vers ta galerie.`); return; }
-      catch (e) { if (e.name === "AbortError") { toast("Partage annulé."); return; } }
+      try { await navigator.share({ files }); toast(`${files.length} photos sent to your gallery.`); return; }
+      catch (e) { if (e.name === "AbortError") { toast("Sharing cancelled."); return; } }
     }
     queue = { files, i: 0 };
     await drainQueue();
   } catch (e) {
-    toast("L'enregistrement a échoué : " + (e.message || e.code || e));
+    toast("Saving failed: " + (e.message || e.code || e));
   } finally { busy = false; }
 }
 async function drainQueue() {
@@ -875,11 +875,11 @@ async function drainQueue() {
     try { await saveBlob(f.name, f); q.i++; }
     catch (e) {
       if (e && e.code === "rate_limited") { await new Promise(r => setTimeout(r, 1200)); continue; }
-      toast(`Arrêté à ${q.i} / ${q.files.length}.`, { progress: q.i / q.files.length, resume: true });
+      toast(`Stopped at ${q.i} / ${q.files.length}.`, { progress: q.i / q.files.length, resume: true });
       return;
     }
   }
-  toast(`${q.files.length} photo${q.files.length > 1 ? "s" : ""} enregistrée${q.files.length > 1 ? "s" : ""}.`, { progress: 1 });
+  toast(`${q.files.length} photo${q.files.length > 1 ? "s" : ""} saved.`, { progress: 1 });
   queue = null;
 }
 $("resume").addEventListener("click", () => { $("toastActs").hidden = true; drainQueue(); });
@@ -902,11 +902,11 @@ function persist() {
   saveTimer = setTimeout(async () => {
     const s = JSON.parse(JSON.stringify(snapshot()));
     try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {}
-    if (docRef) { try { await docRef.set(s); $("sync").textContent = "Réglages synchronisés sur ton compte"; } catch (e) { $("sync").textContent = "Réglages gardés sur cet appareil"; } }
+    if (docRef) { try { await docRef.set(s); $("sync").textContent = "Settings synced to your account"; } catch (e) { $("sync").textContent = "Settings kept on this device"; } }
   }, 900);
 }
 try { apply(JSON.parse(localStorage.getItem(KEY) || "null")); } catch (e) {}
-$("sync").textContent = "Réglages gardés sur cet appareil";
+$("sync").textContent = "Settings kept on this device";
 
 /* ---------- boot ---------- */
 (() => {
@@ -928,7 +928,7 @@ buildControls(); syncControls(); loadSamples(); buildGrid(); buildStrip();
     docRef = d.doc("data/users/" + uid + "/labo");
     const snap = await docRef.get();
     if (snap.exists) { apply(snap.data()); syncControls(); buildStrip(); scheduleRender(); }
-    $("sync").textContent = "Réglages synchronisés sur ton compte";
+    $("sync").textContent = "Settings synced to your account";
   } catch (e) { /* stays on this device */ }
 })();
 })();

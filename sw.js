@@ -1,7 +1,7 @@
-// Labo de série — hors ligne.
-// La page passe par le réseau d'abord (une mise à jour arrive dès qu'on est en ligne),
-// tout le reste par le cache d'abord. Monter VERSION à chaque publication.
-const VERSION = "labo-2";
+// Labo Darkroom — offline support.
+// The page goes network-first (updates arrive as soon as you are online),
+// everything else cache-first. Bump VERSION on every release.
+const VERSION = "labo-3";
 const SHELL = [
   "./", "./index.html", "./manifest.webmanifest", "./jszip.min.js",
   "./icon-192.png", "./icon-512.png", "./icon-maskable-512.png", "./apple-touch-icon.png",
@@ -30,7 +30,7 @@ self.addEventListener("fetch", e => {
     );
     return;
   }
-  // polices Google comprises : mises en cache au premier passage
+  // Google Fonts included: cached on first use
   e.respondWith(
     caches.match(req).then(hit => hit || fetch(req).then(res => {
       if (res.ok || res.type === "opaque") { const copy = res.clone(); caches.open(VERSION).then(c => c.put(req, copy)); }
