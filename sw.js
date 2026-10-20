@@ -1,7 +1,7 @@
 // Labo Darkroom — offline support.
 // The page goes network-first (updates arrive as soon as you are online),
 // everything else cache-first. Bump VERSION on every release.
-const VERSION = "labo-4";
+const VERSION = "labo-5";
 const SHELL = [
   "./", "./index.html", "./manifest.webmanifest", "./jszip.min.js",
   "./icon-192.png", "./icon-512.png", "./icon-maskable-512.png", "./apple-touch-icon.png",

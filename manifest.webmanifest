@@ -1,14 +1,14 @@
 {
-  "name": "Labo Darkroom",
-  "short_name": "Labo",
+  "name": "alpage labo",
+  "short_name": "labo",
   "description": "One look for the whole roll, a correction for every photo.",
   "lang": "en",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#0d0d0e",
-  "theme_color": "#0d0d0e",
+  "background_color": "#14140F",
+  "theme_color": "#14140F",
   "icons": [
     { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },

@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Labo Darkroom</title>
+<title>alpage labo</title>
 <meta name="description" content="One look for the whole roll, a correction for every photo.">
-<meta name="theme-color" content="#0d0d0e">
+<meta name="theme-color" content="#14140F">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Labo">
+<meta name="apple-mobile-web-app-title" content="labo">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -18,20 +18,21 @@
 <body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: an editor, not a web page. Desktop — the photo owns the screen, a filmstrip under it,
    one quiet panel on the right (Looks · Adjust · This photo). Phone — photo pinned on top,
    filmstrip, then the panel; Import and Save in a dock.
    Restraint is the point: near-black neutrals, hairlines, one type family with its mono,
-   white for the primary action and selection, a single safelight-red dot as the brand. */
+   white for the primary action and selection. Brand: the alpage family (one ink stroke, Archivo,
+   warm neutrals); Labo's own colour is the safelight red of the dot in its mark. */
 :root{
-  --bg:#0d0d0e; --stage:#08080a; --surface:#121214; --surface-2:#1a1a1d; --surface-3:#232327;
+  --bg:#14140F; --stage:#0C0C09; --surface:#1A1A14; --surface-2:#1E1E17; --surface-3:#282820;
   --hair:rgba(255,255,255,.07); --hair-2:rgba(255,255,255,.13);
-  --fg:#f2f0ec; --muted:#8e8c91; --faint:#5d5c61;
+  --fg:#EDEAE0; --muted:#948F80; --faint:#77736A;
   --red:#e5483a; --amber:#e3a04a; --green:#8fcf9c;
-  --f:"Geist", "Segoe UI", system-ui, -apple-system, sans-serif;
-  --f-mono:"Geist Mono", ui-monospace, "SF Mono", Consolas, monospace;
+  --f:"Archivo", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono:"DM Mono", ui-monospace, "SF Mono", Consolas, monospace;
   --bar-h:56px;
   color-scheme:dark;
 }
@@ -43,8 +44,11 @@ button,input,label{font-family:inherit}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 
 /* bar */
-.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;height:var(--bar-h);display:flex;align-items:center;gap:18px;padding-inline:20px;background:rgba(13,13,14,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--hair)}
-.brand{display:flex;align-items:baseline;gap:9px;flex:none}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;height:var(--bar-h);display:flex;align-items:center;gap:18px;padding-inline:20px;background:rgba(20,20,15,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--hair)}
+.brand{display:flex;align-items:center;gap:8px;flex:none}
+.brand .logo{width:24px;height:24px;fill:none;stroke:var(--fg);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.brand .logo circle{fill:var(--red);stroke:none}
+.word .fam{color:var(--muted);font-weight:500}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 10px rgba(229,72,58,.7);align-self:center}
 .word{font:600 17px/1 var(--f);letter-spacing:-.03em;margin:0}
 .kicker{font:500 10px/1 var(--f-mono);letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
@@ -186,9 +190,8 @@ details > .btn{margin-bottom:12px}
 
 <header class="bar">
   <div class="brand">
-    <span class="dot" aria-hidden="true"></span>
-    <h1 class="word">Labo</h1>
-    <span class="kicker" aria-hidden="true">Darkroom</span>
+    <svg class="logo" viewBox="0 0 24 24" aria-hidden="true"><path d="M7.2 4.4 C6.8 9.8 6.8 15 7.2 19.6 C10.8 19.8 14.2 19.6 17.4 19.2 C18.6 19 19.2 18 19.2 16.6"/><circle cx="17" cy="6.2" r="1.45"/></svg>
+    <h1 class="word"><span class="fam">alpage</span> labo</h1>
   </div>
   <label class="roll"><span class="sr">Roll name</span><input id="series" type="text" value="Roll" spellcheck="false"></label>
   <span class="meta" id="count"></span>
