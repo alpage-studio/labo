@@ -23,14 +23,18 @@
 /* Layout: an editor, not a web page. Desktop — the photo owns the screen, a filmstrip under it,
    one quiet panel on the right (Looks · Adjust · This photo). Phone — photo pinned on top,
    filmstrip, then the panel; Import and Save in a dock.
-   Restraint is the point: near-black neutrals, hairlines, one type family with its mono,
-   white for the primary action and selection. Brand: the alpage family (one ink stroke, Archivo,
-   warm neutrals); Labo's own colour is the safelight red of the dot in its mark. */
+   Restraint is the point: warm near-black neutrals, hairlines, one type family with its mono,
+   off-white for the primary action and selection. Brand: the alpage family (one ink stroke, Archivo,
+   warm neutrals, 10px controls, 12px cards, 999px pills); Labo's own colour is the safelight red
+   of the dot in its mark. */
 :root{
-  --bg:#14140F; --stage:#0C0C09; --surface:#1A1A14; --surface-2:#1E1E17; --surface-3:#282820;
-  --hair:rgba(255,255,255,.07); --hair-2:rgba(255,255,255,.13);
-  --fg:#EDEAE0; --muted:#948F80; --faint:#77736A;
-  --red:#e5483a; --amber:#e3a04a; --green:#8fcf9c;
+  --bg:#14140F; --stage:#0C0C09; --surface:#1A1A14; --surface-2:#1E1E17; --surface-3:#282820; --surface-4:#313128;
+  --hair:rgba(237,234,224,.07); --hair-2:rgba(237,234,224,.14);
+  --fg:#EDEAE0; --fg-2:#D3CFC3; --muted:#948F80; --faint:#8D887A; /* faint ≥4.5:1 on bg, surface, surface-2 */
+  --ink:#14140F; /* text on the off-white primary */
+  --scrim:rgba(12,12,9,.86); --glass:rgba(20,20,15,.9);
+  --red:#E5483A; --amber:#E3A04A; --green:#8FCF9C;
+  --r-ctl:10px; --r-card:12px; --r-pill:999px;
   --f:"Archivo", "Segoe UI", system-ui, -apple-system, sans-serif;
   --f-mono:"DM Mono", ui-monospace, "SF Mono", Consolas, monospace;
   --bar-h:56px;
@@ -40,151 +44,185 @@
 html,body{height:100%}
 body{background:var(--bg);color:var(--fg);font:14px/1.5 var(--f);margin:0;letter-spacing:-.006em;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
 button,input,label{font-family:inherit}
-:focus-visible{outline:1.5px solid var(--fg);outline-offset:2px}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 /* bar */
-.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;height:var(--bar-h);display:flex;align-items:center;gap:18px;padding-inline:20px;background:rgba(20,20,15,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--hair)}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;height:var(--bar-h);display:flex;align-items:center;gap:18px;padding-inline:20px;background:var(--glass);backdrop-filter:blur(14px);border-bottom:1px solid var(--hair)}
 .brand{display:flex;align-items:center;gap:8px;flex:none}
 .brand .logo{width:24px;height:24px;fill:none;stroke:var(--fg);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .brand .logo circle{fill:var(--red);stroke:none}
 .word .fam{color:var(--muted);font-weight:500}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 10px rgba(229,72,58,.7);align-self:center}
 .word{font:600 17px/1 var(--f);letter-spacing:-.03em;margin:0}
-.kicker{font:500 10px/1 var(--f-mono);letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
-.roll input{background:transparent;border:1px solid transparent;border-radius:7px;color:var(--fg);font:500 13px var(--f);padding:6px 9px;width:220px;max-width:30vw}
+.roll input{background:transparent;border:1px solid transparent;border-radius:var(--r-ctl);color:var(--fg);font:500 13px var(--f);padding:6px 9px;width:220px;max-width:30vw}
 .roll input:hover{border-color:var(--hair)}
 .roll input:focus{border-color:var(--hair-2);background:var(--surface);outline:0}
+.rolltitle{display:none}
 .meta{font:400 11px var(--f-mono);letter-spacing:.06em;color:var(--muted);text-transform:uppercase;margin-left:auto;white-space:nowrap}
 .actions{display:flex;gap:8px}
 
-.btn{appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:34px;padding:0 14px;border-radius:8px;border:1px solid transparent;background:var(--surface-3);color:var(--fg);font:500 13px/1 var(--f);letter-spacing:-.01em;cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s,opacity .15s}
-.btn:hover{background:#2c2c31}
-.btn.primary{background:var(--fg);color:#0d0d0e}
+.btn{appearance:none;position:relative;display:inline-flex;align-items:center;justify-content:center;gap:8px;height:36px;padding:0 14px;border-radius:var(--r-ctl);border:1px solid transparent;background:var(--surface-3);color:var(--fg);font:500 13px/1 var(--f);letter-spacing:-.01em;cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s,opacity .15s}
+.btn:hover{background:var(--surface-4)}
+.btn.primary{background:var(--fg);color:var(--ink)}
 .btn.primary:hover{background:#fff}
 .btn.ghost{background:transparent;border-color:var(--hair-2)}
 .btn.ghost:hover{background:var(--surface-2)}
-.btn.small{height:28px;padding:0 11px;font-size:12px;border-radius:7px}
+.btn.small{height:30px;padding:0 12px;font-size:12px}
+/* hit area ≥44px for the compact buttons, without changing how they look */
+.btn.small::after{content:"";position:absolute;inset:-7px -2px}
 .btn.wide{width:100%}
-.btn[aria-pressed="true"]{background:var(--fg);color:#0d0d0e;border-color:var(--fg)}
+.btn[aria-pressed="true"]{background:var(--fg);color:var(--ink);border-color:var(--fg)}
 .btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.danger{color:var(--red);border-color:rgba(229,72,58,.45)}
 
 /* app */
 .app{display:grid;grid-template-columns:minmax(0,1fr) 352px;height:calc(100dvh - var(--bar-h) - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
 .viewer{display:grid;grid-template-rows:minmax(0,1fr) auto auto;background:var(--stage);min-width:0;min-height:0}
 .stage{position:relative;overflow:hidden;min-width:0;display:flex;align-items:center;justify-content:center;padding:32px 40px 20px;min-height:0;user-select:none;-webkit-user-select:none;touch-action:pan-y;cursor:pointer}
-.stage canvas{display:block;max-width:100%;max-height:100%;box-shadow:0 40px 90px rgba(0,0,0,.65),0 0 0 1px rgba(255,255,255,.04)}
-.split{position:absolute;width:1px;background:rgba(255,255,255,.9);pointer-events:none;transform:translateX(-.5px)}
-.split .knob{position:absolute;top:50%;left:50%;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:rgba(13,13,14,.75);border:1px solid rgba(255,255,255,.9);backdrop-filter:blur(6px)}
+.stage canvas{display:block;max-width:100%;max-height:100%;box-shadow:0 40px 90px rgba(0,0,0,.65),0 0 0 1px var(--hair)}
+.split{position:absolute;width:1px;background:rgba(237,234,224,.9);pointer-events:none;transform:translateX(-.5px)}
+.split .knob{position:absolute;top:50%;left:50%;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:var(--scrim);border:1px solid rgba(237,234,224,.9);backdrop-filter:blur(6px)}
 .split .knob::before,.split .knob::after{content:"";position:absolute;top:50%;width:0;height:0;border-block:4px solid transparent;margin-top:-4px}
-.split .knob::before{left:7px;border-right:5px solid #fff}
-.split .knob::after{right:7px;border-left:5px solid #fff}
-.vtag{position:absolute;font:500 10px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:#fff;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);padding:5px 7px;border-radius:5px;pointer-events:none}
-.drop{position:absolute;inset:16px;border:1px dashed var(--hair-2);border-radius:14px;background:rgba(8,8,10,.85);display:flex;align-items:center;justify-content:center;font:500 15px var(--f);color:var(--fg);z-index:3}
+.split .knob::before{left:7px;border-right:5px solid var(--fg)}
+.split .knob::after{right:7px;border-left:5px solid var(--fg)}
+.vtag{position:absolute;font:500 11px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--fg);background:var(--scrim);backdrop-filter:blur(6px);padding:6px 10px;border-radius:var(--r-pill);pointer-events:none}
+.ghint{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);max-width:calc(100% - 32px);font:400 12px/1.3 var(--f);color:var(--fg);background:var(--scrim);backdrop-filter:blur(8px);border:1px solid var(--hair-2);padding:8px 14px;border-radius:var(--r-pill);pointer-events:none;text-align:center;z-index:2;animation:ghint .4s ease-out}
+@keyframes ghint{from{opacity:0;transform:translate(-50%,6px)}}
+.drop{position:absolute;inset:16px;border:1px dashed var(--hair-2);border-radius:var(--r-card);background:var(--scrim);display:flex;align-items:center;justify-content:center;font:500 15px var(--f);color:var(--fg);z-index:3}
 
 .caption{display:flex;align-items:center;gap:14px;padding:10px 20px;border-top:1px solid var(--hair);min-width:0}
 .frame-no{font:500 11px var(--f-mono);letter-spacing:.06em;color:var(--fg);flex:none}
 .file{font:400 11px var(--f-mono);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:0 1 auto}
 .notes{display:flex;gap:6px;overflow:hidden;flex:1 1 auto;min-width:0;justify-content:flex-end}
-.note{display:inline-flex;align-items:center;gap:6px;font:400 12px/1 var(--f);color:#c9c7cc;background:var(--surface-2);border-radius:999px;padding:5px 10px;white-space:nowrap}
+.note{display:inline-flex;align-items:center;gap:6px;font:400 12px/1 var(--f);color:var(--fg-2);background:var(--surface-2);border-radius:var(--r-pill);padding:5px 10px;white-space:nowrap}
 .note::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--amber)}
 .note.ok::before{background:var(--green)}
+.capbtns{display:flex;gap:8px;flex:none}
 
 .filmstrip{display:flex;gap:6px;overflow-x:auto;padding:12px 20px 16px;border-top:1px solid var(--hair);background:var(--bg);scrollbar-width:thin;scrollbar-color:var(--surface-3) transparent}
-.ft{appearance:none;flex:none;position:relative;padding:0;border:0;background:#000;border-radius:3px;overflow:hidden;cursor:pointer;opacity:.5;transition:opacity .15s,box-shadow .15s}
+.ft{appearance:none;flex:none;position:relative;padding:0;border:0;background:var(--stage);border-radius:4px;overflow:hidden;cursor:pointer;opacity:.5;min-width:44px;transition:opacity .15s,box-shadow .15s}
 .ft:hover{opacity:.85}
-.ft[aria-selected="true"]{opacity:1;box-shadow:0 0 0 1.5px var(--fg)}
-.ft canvas{display:block;height:58px;width:auto}
-.ft .no{position:absolute;left:5px;bottom:4px;font:500 9px/1 var(--f-mono);color:#fff;text-shadow:0 1px 3px #000;letter-spacing:.06em}
+.ft[aria-selected="true"]{opacity:1;box-shadow:0 0 0 2px var(--fg)}
+.ft:focus-visible{outline-offset:3px}
+.ft canvas{display:block;height:58px;width:auto;margin-inline:auto}
+.ft .no{position:absolute;left:5px;bottom:4px;font:500 11px/1 var(--f-mono);color:var(--fg);text-shadow:0 1px 3px #000;letter-spacing:.04em}
 .ft.skip{opacity:.25}
 .ft.skip::after{content:"";position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--red)}
 
 /* panel */
 .panel{display:flex;flex-direction:column;min-height:0;background:var(--surface);border-left:1px solid var(--hair)}
 .tabs{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--hair);flex:none;padding-inline:8px}
-.tab{appearance:none;background:none;border:0;border-bottom:1.5px solid transparent;color:var(--muted);font:500 13px var(--f);height:46px;cursor:pointer;transition:color .15s}
+.tab{appearance:none;background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);font:500 13px var(--f);height:46px;cursor:pointer;transition:color .15s}
 .tab:hover{color:var(--fg)}
+.tab:focus-visible{outline-offset:-4px;border-radius:var(--r-ctl)}
 .tab[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--fg)}
 .pane{flex:1;overflow:auto;padding:18px 18px 28px;min-height:0;scrollbar-width:thin;scrollbar-color:var(--surface-3) transparent}
-.pane h3{font:500 10.5px/1 var(--f-mono);letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:22px 0 12px}
+.pane h3{font:500 11px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:22px 0 12px}
 .pane h3:first-child{margin-top:4px}
 .pane section + section,.pane details,.pane details + section{border-top:1px solid var(--hair);margin-top:20px;padding-top:2px}
-.intro{background:var(--surface-2);border:1px solid var(--hair);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px;align-items:flex-start;margin-bottom:6px}
+.intro{background:var(--surface-2);border:1px solid var(--hair);border-radius:var(--r-card);padding:16px;display:flex;flex-direction:column;gap:12px;align-items:flex-start;margin-bottom:6px}
 .intro p{margin:0;color:var(--muted);font-size:13px;line-height:1.55}
 .intro strong{color:var(--fg);font-weight:500}
 .lookdesc{margin:4px 0 0;color:var(--muted);font-size:12.5px;line-height:1.5;min-height:3em}
 .lookdesc strong{color:var(--fg);font-weight:500}
+.mine{display:flex;gap:8px;align-items:center;margin:10px 0 0}
+.mine input{flex:1;min-width:0;height:36px;background:var(--bg);border:1px solid var(--hair-2);color:var(--fg);font:14px var(--f);padding:0 10px;border-radius:var(--r-ctl)}
+.mine input:focus{border-color:var(--fg);outline:0}
 .look-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 10px}
-.look{appearance:none;background:none;border:0;padding:0;color:var(--muted);text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:7px;font:400 12.5px/1.2 var(--f)}
-.look canvas{display:block;width:100%;aspect-ratio:3/2;height:auto;border-radius:7px;background:#000;transition:box-shadow .15s,transform .15s}
+.look{appearance:none;background:none;border:0;padding:0;color:var(--muted);text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:7px;font:400 12.5px/1.2 var(--f);border-radius:var(--r-card)}
+.look canvas{display:block;width:100%;aspect-ratio:3/2;height:auto;border-radius:var(--r-card);background:var(--stage);box-shadow:0 0 0 1px var(--hair);transition:box-shadow .15s,transform .15s}
 .look:hover canvas{transform:translateY(-1px)}
 .look:hover{color:var(--fg)}
+.look:focus-visible{outline:0}
+.look:focus-visible canvas{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--fg)}
 .look[aria-pressed="true"]{color:var(--fg)}
-.look[aria-pressed="true"] canvas{box-shadow:0 0 0 1.5px var(--surface),0 0 0 3px var(--fg)}
+.look[aria-pressed="true"] canvas{box-shadow:0 0 0 2px var(--surface),0 0 0 3.5px var(--fg)}
 
-.sl{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 10px;margin:4px 0 12px}
-.sl label{font-size:13px;color:#d9d7db}
+.sl{display:grid;grid-template-columns:1fr auto;align-items:center;gap:0 10px;margin:2px 0 8px}
+.sl label{font-size:13px;color:var(--fg-2);cursor:pointer;user-select:none;-webkit-user-select:none}
 .sl output{font:400 11.5px var(--f-mono);color:var(--muted);font-variant-numeric:tabular-nums}
 .sl input{grid-column:1 / -1}
-input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:22px;background:transparent;margin:0;cursor:pointer}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:32px;background:transparent;margin:0;cursor:pointer;border-radius:var(--r-ctl)}
 input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--hair-2);border-radius:2px}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;margin-top:-6px;border-radius:50%;background:var(--fg);box-shadow:0 1px 4px rgba(0,0,0,.6)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;margin-top:-10px;border-radius:50%;background:var(--fg);border:0;box-shadow:0 1px 4px rgba(0,0,0,.6)}
 input[type=range]::-moz-range-track{height:2px;background:var(--hair-2);border-radius:2px}
-input[type=range]::-moz-range-thumb{width:14px;height:14px;border:0;border-radius:50%;background:var(--fg)}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border:0;border-radius:50%;background:var(--fg)}
 .hint{color:var(--muted);font-size:12.5px;line-height:1.5;margin:8px 0 0}
-details summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px}
+details summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;min-height:44px}
 details summary::-webkit-details-marker{display:none}
 details summary h3{margin:22px 0 12px}
 details summary::after{content:"";margin-left:auto;width:7px;height:7px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:rotate(45deg);margin-top:-4px}
 details[open] summary::after{transform:rotate(-135deg);margin-top:4px}
+details summary:focus-visible{outline-offset:-2px;border-radius:var(--r-ctl)}
+.presets{margin:0 0 10px;border:1px solid var(--hair);border-radius:var(--r-card);padding:0 12px}
+.pane details.presets{border-top:1px solid var(--hair);margin-top:0;padding-top:0}
+.presets summary{font-size:13px;color:var(--fg-2)}
+.presets[open]{padding-bottom:12px}
 .gearname{font-size:12px;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 details > .btn{margin-bottom:12px}
 .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
 .field label{font-size:12px;color:var(--muted)}
-.field input{background:var(--bg);border:1px solid var(--hair-2);color:var(--fg);font:14px var(--f);padding:8px 10px;border-radius:8px;min-width:0}
-.seg{display:grid;grid-template-columns:1fr 1fr;padding:3px;background:var(--bg);border:1px solid var(--hair);border-radius:9px;margin-bottom:14px}
-.seg button{appearance:none;border:0;background:transparent;color:var(--muted);font:500 12.5px var(--f);height:30px;border-radius:6px;cursor:pointer}
+.field input{background:var(--bg);border:1px solid var(--hair-2);color:var(--fg);font:14px var(--f);padding:0 10px;height:40px;border-radius:var(--r-ctl);min-width:0}
+.field input:focus{border-color:var(--fg);outline:0}
+.field.phone{display:none}
+.seg{display:grid;grid-template-columns:1fr 1fr;padding:3px;background:var(--bg);border:1px solid var(--hair);border-radius:var(--r-ctl);margin-bottom:8px}
+.seg button{appearance:none;border:0;background:transparent;color:var(--muted);font:500 12.5px var(--f);height:38px;border-radius:8px;cursor:pointer}
 .seg button[aria-pressed="true"]{background:var(--surface-3);color:var(--fg)}
+.seg + .hint{margin:0 0 14px}
 .row{display:flex;gap:8px;flex-wrap:wrap}
-.sync{display:block;margin-top:14px;font:400 10.5px var(--f-mono);letter-spacing:.04em;color:var(--faint)}
+.sync{display:block;margin-top:14px;font:400 11px var(--f-mono);letter-spacing:.04em;color:var(--faint)}
+.sync + .sync{margin-top:4px}
+.sync.warn{color:var(--amber)}
 .found{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .found li{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--hair);font-size:13px}
 .found li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--amber);flex:none}
 .found li.ok::before{background:var(--green)}
-.switch{display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;margin-top:6px}
-.switch input{appearance:none;width:32px;height:18px;border-radius:999px;background:var(--surface-3);position:relative;cursor:pointer;margin:0;transition:background .15s}
-.switch input::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--fg);transition:transform .15s}
+.switch{display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;margin-top:6px;min-height:44px}
+.switch input{appearance:none;width:36px;height:20px;border-radius:var(--r-pill);background:var(--surface-3);position:relative;cursor:pointer;margin:0;flex:none;transition:background .15s}
+.switch input::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--fg);transition:transform .15s}
 .switch input:checked{background:var(--red)}
-.switch input:checked::after{transform:translateX(14px)}
+.switch input:checked::after{transform:translateX(16px)}
 
 /* dock + toast */
 .dock{display:none}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 24px);z-index:30;width:min(380px,calc(100% - 32px));background:rgba(26,26,29,.92);backdrop-filter:blur(14px);border:1px solid var(--hair-2);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:9px;box-shadow:0 18px 40px rgba(0,0,0,.5)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 24px);z-index:30;width:min(380px,calc(100% - 32px));background:var(--glass);backdrop-filter:blur(14px);border:1px solid var(--hair-2);border-radius:var(--r-card);padding:12px 14px;display:flex;flex-direction:column;gap:9px;box-shadow:0 18px 40px rgba(0,0,0,.5)}
 .toast p{margin:0;font-size:13px}
 .prog{height:2px;background:var(--hair-2);border-radius:2px;overflow:hidden}
 .prog i{display:block;height:100%;width:0;background:var(--fg);transition:width .2s}
 
+@media (pointer:coarse){
+  input[type=range]{height:44px}
+  .seg button{height:44px}
+  .btn{height:44px}
+  .btn.small{height:36px}
+  .btn.small::after{inset:-4px -2px}
+}
 @media (max-width:900px){
   :root{--bar-h:52px}
   .bar{gap:12px;padding-inline:16px}
   .roll,.actions{display:none}
+  .rolltitle{display:block;appearance:none;background:none;border:0;color:var(--fg);font:500 13px var(--f);min-width:0;flex:1 1 auto;height:44px;padding:0 4px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;border-radius:var(--r-ctl)}
+  .meta{margin-left:0}
+  .field.phone{display:flex}
   .app{display:block;height:auto}
   .viewer{position:sticky;top:calc(var(--bar-h) + env(safe-area-inset-top,0px));z-index:5;grid-template-rows:auto auto auto;border-bottom:1px solid var(--hair)}
   .stage{height:40vh;padding:12px 16px 8px}
+  .ghint{bottom:12px;font-size:12px}
   .caption{padding:8px 16px;gap:10px}
   .notes{display:none}
-  .caption .btn{margin-left:auto}
+  .capbtns{margin-left:auto}
   .filmstrip{padding:8px 16px 10px;gap:5px}
-  .ft canvas{height:42px}
+  .ft canvas{height:44px}
   .panel{border-left:0;min-height:auto}
   .tabs{position:static;padding-inline:4px}
   .pane{overflow:visible;padding:16px 16px calc(84px + env(safe-area-inset-bottom,0px))}
   .look-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 8px}
-  .dock{display:grid;grid-template-columns:1fr 1.4fr;gap:8px;position:fixed;left:0;right:0;bottom:0;z-index:12;padding:10px 16px calc(env(safe-area-inset-bottom,0px) + 10px);background:rgba(13,13,14,.9);backdrop-filter:blur(14px);border-top:1px solid var(--hair)}
-  .dock .btn{height:44px;font-size:14px;border-radius:10px}
+  .look canvas{border-radius:var(--r-ctl)}
+  .dock{display:grid;grid-template-columns:1fr 1.4fr;gap:8px;position:fixed;left:0;right:0;bottom:0;z-index:12;padding:10px 16px calc(env(safe-area-inset-bottom,0px) + 10px);background:var(--glass);backdrop-filter:blur(14px);border-top:1px solid var(--hair)}
+  .dock .btn{height:44px;font-size:14px}
   .toast{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
 }
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 #looks > h3:first-child{margin-top:20px}
 </style>
 
@@ -194,6 +232,7 @@ details > .btn{margin-bottom:12px}
     <h1 class="word"><span class="fam">alpage</span> labo</h1>
   </div>
   <label class="roll"><span class="sr">Roll name</span><input id="series" type="text" value="Roll" spellcheck="false"></label>
+  <button class="rolltitle" id="rollTitle" type="button" aria-label="Rename the roll">Roll</button>
   <span class="meta" id="count"></span>
   <div class="actions">
     <label class="btn ghost" for="pick">Import</label>
@@ -211,33 +250,42 @@ details > .btn{margin-bottom:12px}
       <span class="vtag" id="tagAfter" hidden>After</span>
       <span class="vtag hold" id="tagHold" hidden>Original</span>
       <div class="drop" id="drop" hidden><span>Drop photos to import</span></div>
+      <p class="ghint" id="ghint" hidden></p>
     </div>
     <div class="caption">
       <span class="frame-no" id="capNo"></span>
       <span class="file" id="capName"></span>
       <div class="notes" id="capNotes"></div>
-      <button class="btn ghost small" id="compare" type="button" aria-pressed="false">Compare</button>
+      <div class="capbtns">
+        <button class="btn ghost small" id="undo" type="button" disabled aria-keyshortcuts="Control+Z Meta+Z" title="Undo (Ctrl/Cmd+Z)">Undo</button>
+        <button class="btn ghost small" id="compare" type="button" aria-pressed="false">Compare</button>
+      </div>
     </div>
     <div class="filmstrip" id="filmstrip" role="listbox" aria-label="Photos in this roll"></div>
   </section>
 
   <aside class="panel" aria-label="Controls">
-    <div class="tabs" role="tablist">
-      <button class="tab" role="tab" data-tab="looks" aria-selected="true" type="button">Looks</button>
-      <button class="tab" role="tab" data-tab="adjust" aria-selected="false" type="button">Adjust</button>
-      <button class="tab" role="tab" data-tab="photo" aria-selected="false" type="button">This photo</button>
+    <div class="tabs" role="tablist" aria-label="Panels">
+      <button class="tab" role="tab" id="tab-looks" data-tab="looks" aria-controls="pane-looks" aria-selected="true" tabindex="0" type="button">Looks</button>
+      <button class="tab" role="tab" id="tab-adjust" data-tab="adjust" aria-controls="pane-adjust" aria-selected="false" tabindex="-1" type="button">Adjust</button>
+      <button class="tab" role="tab" id="tab-photo" data-tab="photo" aria-controls="pane-photo" aria-selected="false" tabindex="-1" type="button">This photo</button>
     </div>
 
-    <div class="pane" data-pane="looks" role="tabpanel">
+    <div class="pane" id="pane-looks" data-pane="looks" role="tabpanel" aria-labelledby="tab-looks">
       <div class="intro" id="intro">
         <p><strong>One look for the whole roll.</strong> Each photo is corrected on its own first: exposure, colour cast, skin tone.</p>
         <label class="btn primary" for="pick">Import your roll</label>
       </div>
       <p class="lookdesc" id="lookDesc"></p>
+      <div class="mine" id="mine" hidden>
+        <label class="sr" for="mineName">Name of this look</label>
+        <input id="mineName" type="text" spellcheck="false" maxlength="40">
+        <button id="mineDel" class="btn ghost small danger" type="button">Delete</button>
+      </div>
       <div id="looks"></div>
     </div>
 
-    <div class="pane" data-pane="adjust" role="tabpanel" hidden>
+    <div class="pane" id="pane-adjust" data-pane="adjust" role="tabpanel" aria-labelledby="tab-adjust" hidden>
       <section>
         <h3>Look</h3>
         <div id="lookSliders"></div>
@@ -250,7 +298,10 @@ details > .btn{margin-bottom:12px}
       </section>
       <details id="gearBox">
         <summary><h3>My gear</h3><span class="gearname" id="gearName"></span></summary>
-        <button id="mju" class="btn ghost small wide" type="button">Load Olympus mju II + Portra 400</button>
+        <details class="presets">
+          <summary>Presets</summary>
+          <button id="mju" class="btn ghost small wide" type="button">Compact camera + Portra 400</button>
+        </details>
         <div class="field"><label for="gearInput">Camera / film</label><input id="gearInput" type="text" placeholder="e.g. Olympus mju II · Portra 400"></div>
         <div id="gearSliders"></div>
         <button id="learn" class="btn ghost small" type="button">Learn from this roll</button>
@@ -258,19 +309,22 @@ details > .btn{margin-bottom:12px}
       </details>
       <section>
         <h3>Export</h3>
+        <div class="field phone"><label for="seriesM">Roll name</label><input id="seriesM" type="text" value="Roll" spellcheck="false"></div>
         <div class="seg" id="modeSeg" role="group" aria-label="Format">
           <button type="button" data-mode="photos" aria-pressed="false">Separate photos</button>
           <button type="button" data-mode="zip" aria-pressed="false">One ZIP file</button>
         </div>
+        <p class="hint" id="modeHint">One ZIP is a single download; separate photos save one file each.</p>
         <div class="row">
           <button id="export" class="btn primary" type="button">Save the roll</button>
           <button id="clear" class="btn ghost" type="button">New roll</button>
         </div>
+        <span id="rollSaved" class="sync" role="status"></span>
         <span id="sync" class="sync"></span>
       </section>
     </div>
 
-    <div class="pane" data-pane="photo" role="tabpanel" hidden>
+    <div class="pane" id="pane-photo" data-pane="photo" role="tabpanel" aria-labelledby="tab-photo" hidden>
       <section>
         <h3>Found in this photo</h3>
         <ul class="found" id="found"></ul>
@@ -293,6 +347,7 @@ details > .btn{margin-bottom:12px}
   <p id="toastMsg"></p>
   <div class="prog" id="prog" hidden><i></i></div>
   <div class="row" id="toastActs" hidden><button id="resume" class="btn small primary" type="button">Continue</button></div>
+  <div class="row" id="toastAct" hidden><button id="toastBtn" class="btn small primary" type="button"></button></div>
 </div>
 
 <script src="jszip.min.js"></script>
@@ -533,13 +588,29 @@ const tick = () => new Promise(r => setTimeout(r, 0));
 
 /* ---------- toast ---------- */
 let toastTimer = 0;
-function toast(msg, { progress = null, stay = false, resume = false } = {}) {
+let toastFn = null;
+function toast(msg, { progress = null, stay = false, resume = false, action = null } = {}) {
   clearTimeout(toastTimer);
   $("toast").hidden = false; $("toastMsg").textContent = msg;
   $("prog").hidden = progress === null; if (progress !== null) $("prog").firstElementChild.style.width = Math.round(progress * 100) + "%";
   $("toastActs").hidden = !resume;
-  if (!stay && !resume) toastTimer = setTimeout(() => $("toast").hidden = true, 3500);
+  $("toastAct").hidden = !action; toastFn = action?.fn || null; if (action) $("toastBtn").textContent = action.label;
+  if (!stay && !resume) toastTimer = setTimeout(() => $("toast").hidden = true, action ? 6000 : 3500);
 }
+$("toastBtn").addEventListener("click", () => { $("toast").hidden = true; const f = toastFn; toastFn = null; f?.(); });
+
+/* ---------- one line for every built-in look, in the same voice ---------- */
+const DESC = {
+  naturel: "The photo as it should have come out: corrected, a touch of contrast, nothing added.",
+  film: "An old consumer film: warm tones, faded blacks, visible grain, soft corners.",
+  cine: "A film still: teal shadows, warm skin, firm contrast, dark corners.",
+  fane: "A print left in the sun: lifted blacks, quiet colours, heavy grain.",
+  eclat: "Slide film punch: deep colours, firm contrast, open shadows.",
+  nb: "A pushed black-and-white film: strong contrast, deep blacks, coarse grain.",
+};
+PRESETS.forEach(p => { if (!p.desc && DESC[p.id]) p.desc = DESC[p.id]; });
+const store = (k, v) => { try { v === undefined ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} };
+const stored = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
 
 /* ---------- helpers ---------- */
 function scaled(img, maxSide) {
@@ -560,10 +631,18 @@ const saveable = () => state.photos.filter(p => p.file && !p.skip);
 
 /* ---------- tabs ---------- */
 function setTab(t) {
-  document.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === t)));
+  document.querySelectorAll(".tab").forEach(b => { const on = b.dataset.tab === t; b.setAttribute("aria-selected", String(on)); b.tabIndex = on ? 0 : -1; });
   document.querySelectorAll(".pane").forEach(p => p.hidden = p.dataset.pane !== t);
 }
 document.querySelectorAll(".tab").forEach(b => b.addEventListener("click", () => setTab(b.dataset.tab)));
+document.querySelector(".tabs").addEventListener("keydown", e => {
+  const tabs = [...document.querySelectorAll(".tab")], i = tabs.indexOf(document.activeElement);
+  if (i < 0) return;
+  const j = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+  if (j === undefined) return;
+  e.preventDefault(); e.stopPropagation();
+  const t = tabs[(j + tabs.length) % tabs.length]; setTab(t.dataset.tab); t.focus();
+});
 
 /* ---------- looks: every look previewed on the photo you are looking at ---------- */
 function allLooks() {
@@ -583,14 +662,21 @@ function buildLooks() {
       continue;
     }
     const b = document.createElement("button"); b.type = "button"; b.className = "look"; b.dataset.id = l.id;
-    const c = document.createElement("canvas"); c.width = 240; c.height = 160;
-    const s = document.createElement("span"); s.textContent = l.name;
-    b.append(c, s); if (l.desc) b.title = l.desc;
-    b.addEventListener("click", () => { state.look = JSON.parse(JSON.stringify(l)); state.lookId = l.id; lookCtl.forEach(x => x.sync()); markLooks(); changed(); });
+    const c = document.createElement("canvas"); c.width = 240; c.height = 160; c.setAttribute("aria-hidden", "true");
+    const s = document.createElement("span"); s.className = "lname"; s.textContent = l.name;
+    b.append(c, s);
+    if (l.desc) { const d = document.createElement("span"); d.className = "sr"; d.id = "ld-" + l.id; d.textContent = l.desc; b.append(d); b.setAttribute("aria-describedby", d.id); }
+    b.addEventListener("click", () => {
+      if (state.lookId === l.id) return;
+      remember();
+      state.look = JSON.parse(JSON.stringify(l)); state.lookId = l.id; lookBase = state.look;
+      lookCtl.forEach(x => x.sync()); markLooks(); changed();
+    });
     grid.append(b);
   }
   markLooks(); paintLooks();
 }
+const savedLook = () => state.savedLooks.find(x => x.id === state.lookId);
 function markLooks() {
   $("looks").querySelectorAll(".look").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.id === state.lookId)));
   const l = allLooks().find(x => x.id === state.lookId);
@@ -599,13 +685,34 @@ function markLooks() {
     const n = document.createElement("strong"); n.textContent = l.name;
     $("lookDesc").append(n, document.createTextNode(l.desc ? " · " + l.desc : ""));
   } else $("lookDesc").textContent = "Hand-tuned look. Keep it from the Adjust tab to find it here again.";
+  const mine = savedLook();
+  $("mine").hidden = !mine; disarmDel();
+  if (mine && document.activeElement !== $("mineName")) $("mineName").value = mine.name;
 }
+$("mineName").addEventListener("input", e => {
+  const mine = savedLook(); if (!mine) return;
+  mine.name = e.target.value.trim() || "My look";
+  const b = $("looks").querySelector(`.look[data-id="${CSS.escape(mine.id)}"] .lname`); if (b) b.textContent = mine.name;
+  $("lookDesc").firstElementChild && ($("lookDesc").firstElementChild.textContent = mine.name);
+  persist();
+});
+$("mineName").addEventListener("keydown", e => { if (e.key === "Enter") e.target.blur(); });
+$("mineName").addEventListener("blur", e => { const mine = savedLook(); if (mine) e.target.value = mine.name; });
+let delArmed = 0;
+function disarmDel() { clearTimeout(delArmed); delArmed = 0; $("mineDel").textContent = "Delete"; }
+$("mineDel").addEventListener("click", () => {
+  const mine = savedLook(); if (!mine) return;
+  if (!delArmed) { $("mineDel").textContent = "Delete for good?"; delArmed = setTimeout(disarmDel, 3000); return; }
+  disarmDel();
+  state.savedLooks = state.savedLooks.filter(x => x !== mine);
+  state.lookId = null; buildLooks(); persist(); toast(`“${mine.name}” deleted.`);
+});
 let looksGen = 0;
 async function paintLooks() {
   const my = ++looksGen, p = cur(); if (!p) return;
   p.mini ||= scaled(p.thumb, 240);
   const looks = allLooks().filter(l => !l.sep);
-  for (const b of $("looks").querySelectorAll(".look")) {
+  for (const b of [...$("looks").querySelectorAll(".look")]) {
     if (my !== looksGen) return;
     const l = looks.find(x => x.id === b.dataset.id); if (!l) continue;
     cover(b.firstElementChild, render(p.mini, buildParams(p, l), { cell: 1 }));
@@ -630,6 +737,7 @@ function buildFilm() {
 }
 function markFilm() {
   state.photos.forEach((p, i) => {
+    if (!p.ft) return; // still importing: the strip is rebuilt when the import ends
     p.ft.b.setAttribute("aria-selected", String(i === state.viewIdx));
     p.ft.b.classList.toggle("skip", p.skip);
   });
@@ -642,17 +750,19 @@ async function paintFilm() {
   const my = ++filmGen;
   for (const p of state.photos) {
     if (my !== filmGen) return;
+    if (!p.ft) continue;
     p.ft.c.getContext("2d").putImageData(render(p.thumb, buildParams(p), { cell: 1 }), 0, 0);
     await tick();
   }
 }
-function paintThumb(p) { p.ft.c.getContext("2d").putImageData(render(p.thumb, buildParams(p), { cell: 1 }), 0, 0); }
+function paintThumb(p) { if (!p?.ft) return; p.ft.c.getContext("2d").putImageData(render(p.thumb, buildParams(p), { cell: 1 }), 0, 0); }
 
 /* ---------- stage ---------- */
 let split = .5, comparing = false, holding = false;
 async function select(i) {
   state.viewIdx = clamp(i, 0, state.photos.length - 1); const p = cur();
   markFilm(); paintCaption(); paintFound(); nudgeCtl.forEach(c => c.sync()); $("vskip").checked = p.skip;
+  if (!p.sample) saveRollMeta();
   if (!p.mid) {
     renderStage(p.thumb);
     if (p.file) { try { const bm = await decode(p.file); p.mid = toImageData(bm, 2000); bm.close(); } catch (e) { p.mid = p.thumb; } }
@@ -708,6 +818,7 @@ function paintFound() {
   const setSplit = e => { const r = c.getBoundingClientRect(); split = clamp((e.clientX - r.left) / r.width, 0, 1); cancelAnimationFrame(pending); pending = requestAnimationFrame(() => renderStage()); };
   st.addEventListener("pointerdown", e => {
     if (e.target.closest(".drop")) return;
+    hintSeen();
     down = true; moved = false; x0 = e.clientX; t0 = performance.now(); st.setPointerCapture(e.pointerId);
     if (comparing) setSplit(e); else { holding = true; renderStage(); }
   });
@@ -723,26 +834,46 @@ function paintFound() {
 })();
 $("compare").addEventListener("click", e => { comparing = !comparing; e.currentTarget.setAttribute("aria-pressed", String(comparing)); renderStage(); });
 document.addEventListener("keydown", e => {
-  if (e.target.matches("input, textarea")) return;
-  if (e.key === "ArrowRight") select(state.viewIdx + 1);
-  if (e.key === "ArrowLeft") select(state.viewIdx - 1);
+  if ((e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey && e.key.toLowerCase() === "z") {
+    if (e.target.matches?.("input[type=text], textarea")) return; // native text undo
+    e.preventDefault(); undo(); return;
+  }
+  if (e.target.matches?.("input, textarea") || e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.key === "ArrowRight") { hintSeen(); select(state.viewIdx + 1); }
+  if (e.key === "ArrowLeft") { hintSeen(); select(state.viewIdx - 1); }
   if (e.key === "\\" || e.key === "c") $("compare").click();
 });
 
+/* ---------- one-time hint for the hidden gestures ---------- */
+const HINT_KEY = "labo-hint-gestures";
+const coarse = matchMedia("(pointer:coarse)").matches;
+$("ghint").textContent = coarse ? "Hold to see the original · swipe for the next frame" : "Hold to see the original · ← → for the next frame";
+$("ghint").hidden = !!stored(HINT_KEY);
+function hintSeen() { if ($("ghint").hidden) return; $("ghint").hidden = true; store(HINT_KEY, "1"); }
+
 /* ---------- sliders ---------- */
-function slider(parent, id, label, min, max, get, set, step = .01, fmt = v => (v > 0 ? "+" : "") + Math.round(v * 100)) {
+// One undo step per gesture: the snapshot is taken on the first input of a drag (or of a key press).
+// Double-click / double-tap on the label puts the slider back to its default.
+function slider(parent, id, label, min, max, get, set, step = .01, fmt = v => (v > 0 ? "+" : "") + Math.round(v * 100), def = () => 0) {
   const row = document.createElement("div"); row.className = "sl";
-  const lb = document.createElement("label"); lb.htmlFor = id; lb.textContent = label;
+  const lb = document.createElement("label"); lb.htmlFor = id; lb.textContent = label; lb.title = "Double-click to reset";
   const out = document.createElement("output"); out.htmlFor = id; out.textContent = fmt(get());
   const r = document.createElement("input"); r.type = "range"; r.id = id; r.min = min; r.max = max; r.step = step; r.value = get();
-  r.addEventListener("input", () => { set(+r.value); out.textContent = fmt(+r.value); });
+  let armed = false;
+  r.addEventListener("input", () => { if (!armed) { remember(); armed = true; } set(+r.value); out.textContent = fmt(+r.value); });
+  r.addEventListener("change", () => { armed = false; });
+  const reset = () => { const v = def(); if (Math.abs(get() - v) < 1e-9) return; remember(); set(v); r.value = v; out.textContent = fmt(v); };
+  let lastTap = 0;
+  lb.addEventListener("dblclick", e => { e.preventDefault(); reset(); lastTap = 0; });
+  lb.addEventListener("pointerup", e => { if (e.pointerType !== "touch") return; const t = e.timeStamp; if (t - lastTap < 350) { e.preventDefault(); reset(); lastTap = 0; } else lastTap = t; });
   row.append(lb, out, r); parent.append(row);
   return { sync() { r.value = get(); out.textContent = fmt(get()); } };
 }
 const lookCtl = []; let gearCtl = [], nudgeCtl = [], strengthCtl;
+let lookBase = null; // the look last picked: what a look slider resets to
 function buildControls() {
-  LOOK_SLIDERS.forEach(([k, label, mn, mx]) => lookCtl.push(slider($("lookSliders"), "look-" + k, label, mn, mx, () => state.look[k], v => { state.look[k] = v; state.lookId = null; markLooks(); changed(); })));
-  strengthCtl = slider($("autoSliders"), "strength", "Strength", 0, 1, () => state.strength, v => { state.strength = v; changed(); }, .01, v => Math.round(v * 100) + "%");
+  LOOK_SLIDERS.forEach(([k, label, mn, mx]) => lookCtl.push(slider($("lookSliders"), "look-" + k, label, mn, mx, () => state.look[k], v => { state.look[k] = v; state.lookId = null; markLooks(); changed(); }, .01, undefined, () => lookBase?.[k] ?? 0)));
+  strengthCtl = slider($("autoSliders"), "strength", "Strength", 0, 1, () => state.strength, v => { state.strength = v; changed(); }, .01, v => Math.round(v * 100) + "%", () => .8);
   const gs = $("gearSliders"), ev1 = v => (v > 0 ? "+" : "") + v.toFixed(1);
   gearCtl = [
     slider(gs, "g-ev", "Base exposure", -1, 1, () => state.gear.ev, v => { state.gear.ev = v; changed(); }, .1, ev1),
@@ -753,10 +884,25 @@ function buildControls() {
   $("gearInput").addEventListener("input", e => { state.gear.name = e.target.value; paintGearName(); persist(); });
   const nz = $("nudgeSliders");
   nudgeCtl = [
-    slider(nz, "n-ev", "Exposure", -2, 2, () => cur()?.nudge.ev ?? 0, v => { cur().nudge.ev = v; changed(true); }, .1, ev1),
-    slider(nz, "n-warm", "Warmth", -1, 1, () => cur()?.nudge.warm ?? 0, v => { cur().nudge.warm = v; changed(true); }),
+    slider(nz, "n-ev", "Exposure", -2, 2, () => cur()?.nudge.ev ?? 0, v => { cur().nudge.ev = v; changed(true); saveRollMeta(); }, .1, ev1),
+    slider(nz, "n-warm", "Warmth", -1, 1, () => cur()?.nudge.warm ?? 0, v => { cur().nudge.warm = v; changed(true); saveRollMeta(); }),
   ];
 }
+
+/* ---------- undo: snapshots of the look, the sliders and the per-photo nudges ---------- */
+const hist = [], HIST_MAX = 40;
+function snap() { return JSON.stringify({ look: state.look, lookId: state.lookId, base: lookBase, strength: state.strength, gear: state.gear, nudges: state.photos.map(p => [p.id, p.nudge]) }); }
+function remember() { const s = snap(); if (hist[hist.length - 1] !== s) { hist.push(s); if (hist.length > HIST_MAX) hist.shift(); } paintUndo(); }
+function paintUndo() { $("undo").disabled = !hist.length; }
+function undo() {
+  const s = hist.pop(); paintUndo(); if (!s) return;
+  const o = JSON.parse(s);
+  state.look = o.look; state.lookId = o.lookId; lookBase = o.base; state.strength = o.strength; state.gear = o.gear;
+  const m = new Map(o.nudges); state.photos.forEach(p => { const n = m.get(p.id); if (n) p.nudge = n; });
+  syncControls(); nudgeCtl.forEach(c => c.sync()); markLooks(); changed(); saveRollMeta();
+  toast("Undone.");
+}
+$("undo").addEventListener("click", undo);
 function paintGearName() { $("gearName").textContent = state.gear.name || ""; }
 function paintMode() { $("modeSeg").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.mode === state.exportMode))); }
 function syncControls() {
@@ -773,7 +919,86 @@ function changed(photoOnly) {
   });
   if (!photoOnly) persist();
 }
-$("vskip").onchange = e => { cur().skip = e.target.checked; markFilm(); paintCounts(); };
+$("vskip").onchange = e => { cur().skip = e.target.checked; markFilm(); paintCounts(); saveRollMeta(); };
+
+/* ---------- the roll survives a reload: IndexedDB 'labo' / 'kv' ----------
+   "roll"       → { name, viewIdx, photos: [{ id, name, nudge, skip }] }
+   "f:<id>"     → { file (original, needed to develop at full size), thumb (ImageData, so reopening is instant) } */
+const idb = (() => {
+  let open = null;
+  const db = () => open ||= new Promise((res, rej) => {
+    if (!("indexedDB" in window)) return rej(new Error("no IndexedDB"));
+    const r = indexedDB.open("labo", 1);
+    r.onupgradeneeded = () => r.result.createObjectStore("kv");
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); r.onblocked = () => rej(new Error("blocked"));
+  });
+  const tx = async (mode, fn) => {
+    const d = await db();
+    return new Promise((res, rej) => {
+      const t = d.transaction("kv", mode), req = fn(t.objectStore("kv"));
+      t.oncomplete = () => res(req && req.result); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error || new Error("aborted"));
+    });
+  };
+  return {
+    get: k => tx("readonly", s => s.get(k)),
+    put: (k, v) => tx("readwrite", s => s.put(v, k)),
+    putMany: list => tx("readwrite", s => { list.forEach(([k, v]) => s.put(v, k)); }),
+    clear: () => tx("readwrite", s => s.clear()),
+  };
+})();
+const ROLL_CAP = 1.5 * 1024 ** 3; // originals kept on the device, at most ~1.5 GB
+const isQuota = e => e && (e.name === "QuotaExceededError" || e.name === "NS_ERROR_DOM_QUOTA_REACHED" || /quota/i.test(e.message || ""));
+let rollOK = true;
+function paintRollSaved(msg, warn) {
+  const el = $("rollSaved");
+  el.textContent = msg ?? (real().length ? (rollOK ? "Roll saved on this device" : "") : "");
+  el.classList.toggle("warn", !!warn);
+}
+function rollFail(e, kept, total) {
+  rollOK = false;
+  const m = isQuota(e) || kept !== undefined
+    ? `Not enough room on this device: ${kept ?? 0} of ${total} frames will come back after a reload.`
+    : "This browser cannot keep the roll: it will be gone after a reload.";
+  paintRollSaved(m, true); toast(m);
+}
+let metaTimer = 0;
+function saveRollMeta() {
+  clearTimeout(metaTimer);
+  metaTimer = setTimeout(() => {
+    if (!real().length) return;
+    const meta = { name: $("series").value, viewIdx: state.viewIdx, photos: real().filter(p => p.stored).map(p => ({ id: p.id, name: p.name, nudge: p.nudge, skip: p.skip })) };
+    idb.put("roll", meta).catch(e => rollFail(e));
+  }, 400);
+}
+async function storePhotos(list) {
+  let used = real().filter(p => p.stored).reduce((a, p) => a + (p.file?.size || 0), 0), kept = 0;
+  try {
+    for (const p of list) {
+      if (used + p.file.size > ROLL_CAP) throw Object.assign(new Error("cap"), { cap: true });
+      await idb.put("f:" + p.id, { file: p.file, thumb: p.thumb });
+      p.stored = true; used += p.file.size; kept++;
+    }
+    rollOK = true; paintRollSaved();
+  } catch (e) { rollFail(e, real().filter(p => p.stored).length, real().length); }
+  saveRollMeta();
+}
+async function restoreRoll() {
+  let meta; try { meta = await idb.get("roll"); } catch (e) { return false; }
+  if (!meta?.photos?.length) return false;
+  const photos = [];
+  for (const m of meta.photos) {
+    try {
+      const rec = await idb.get("f:" + m.id); if (!rec?.file || !rec.thumb) continue;
+      const thumb = rec.thumb instanceof ImageData ? rec.thumb : new ImageData(new Uint8ClampedArray(rec.thumb.data), rec.thumb.width, rec.thumb.height);
+      const p = makePhoto({ name: m.name, file: rec.file, thumb, id: m.id }); p.nudge = { ev: 0, warm: 0, ...m.nudge }; p.skip = !!m.skip; p.stored = true;
+      photos.push(p);
+    } catch (e) { /* that frame is lost; keep the others */ }
+  }
+  if (!photos.length) return false;
+  state.photos = photos; state.viewIdx = clamp(meta.viewIdx | 0, 0, photos.length - 1);
+  setSeries(meta.name || "Roll", true);
+  return true;
+}
 
 /* ---------- roll ---------- */
 function paintCounts() {
@@ -781,30 +1006,46 @@ function paintCounts() {
   $("count").textContent = n ? `${n} frame${n > 1 ? "s" : ""}` : "Samples";
   ["saveTop", "saveDock"].forEach(id => $(id).textContent = k ? `Save ${k}` : "Save");
   $("intro").hidden = n > 0; $("clear").hidden = n === 0;
+  paintRollSaved();
 }
 function loadRoll() { buildFilm(); paintCounts(); select(clamp(state.viewIdx, 0, state.photos.length - 1)); }
 
+/* roll name: one value, three places (bar field on desktop, title + Adjust field on phones) */
+let seriesTouched = false;
+function setSeries(v, touched) {
+  if (touched !== undefined) seriesTouched = touched;
+  for (const id of ["series", "seriesM"]) if ($(id).value !== v) $(id).value = v;
+  $("rollTitle").textContent = v || "Roll";
+}
+["series", "seriesM"].forEach(id => $(id).addEventListener("input", e => { setSeries(e.target.value, true); saveRollMeta(); }));
+$("rollTitle").addEventListener("click", () => {
+  setTab("adjust");
+  const f = $("seriesM"); f.scrollIntoView({ block: "center", behavior: "smooth" }); f.focus({ preventScroll: true }); f.select();
+});
+
 async function addFiles(files) {
   files = [...files]; if (!files.length) return;
-  if (state.photos.some(p => p.sample)) state.photos = [];
-  const start = state.photos.length; let ok = 0; const bad = [];
+  if (state.photos.some(p => p.sample)) { state.photos = []; hist.length = 0; paintUndo(); }
+  const start = state.photos.length; const added = []; const bad = [];
   for (const [i, f] of files.entries()) {
     toast(`Analysing ${i + 1} / ${files.length}`, { progress: i / files.length, stay: true });
     try {
       const bm = await decode(f); const thumb = toImageData(bm, 480); bm.close();
-      state.photos.push(makePhoto({ name: f.name, file: f, thumb, id: f.name + f.size + i }));
-      ok++;
+      const p = makePhoto({ name: f.name, file: f, thumb, id: Date.now().toString(36) + "-" + i + "-" + Math.random().toString(36).slice(2, 7) });
+      state.photos.push(p); added.push(p);
     } catch (e) { bad.push(f.name); }
   }
-  if (!$("series").dataset.touched) {
+  const ok = added.length;
+  if (!seriesTouched && ok) {
     const d = files[0].lastModified ? new Date(files[0].lastModified) : new Date();
-    $("series").value = "Roll " + d.toLocaleDateString("en-GB");
+    setSeries("Roll " + d.toLocaleDateString("en-GB"));
   }
-  toast(`${ok} photo${ok > 1 ? "s" : ""} ready.` + (bad.length ? ` Could not read: ${bad.join(", ")}.` : ""));
-  state.viewIdx = start; loadRoll(); setTab("looks");
+  toast(`${ok} photo${ok !== 1 ? "s" : ""} ready.` + (bad.length ? ` Could not read: ${bad.join(", ")}.` : ""));
+  if (!state.photos.length) { loadSamples(); state.viewIdx = 0; loadRoll(); return; }
+  state.viewIdx = Math.min(start, state.photos.length - 1); loadRoll(); setTab("looks");
+  if (added.length) storePhotos(added);
 }
 $("pick").addEventListener("change", e => { addFiles(e.target.files); e.target.value = ""; });
-$("series").addEventListener("input", e => e.target.dataset.touched = "1");
 document.addEventListener("dragover", e => { e.preventDefault(); $("drop").hidden = false; });
 document.addEventListener("dragleave", e => { if (!e.relatedTarget) $("drop").hidden = true; });
 document.addEventListener("drop", e => { e.preventDefault(); $("drop").hidden = true; addFiles(e.dataTransfer.files); });
@@ -813,14 +1054,17 @@ $("clear").addEventListener("click", e => {
   const b = e.currentTarget;
   if (!clearArmed) { b.textContent = "Clear the roll?"; clearArmed = setTimeout(() => { b.textContent = "New roll"; clearArmed = 0; }, 3000); return; }
   clearTimeout(clearArmed); clearArmed = 0; b.textContent = "New roll";
-  loadSamples(); state.viewIdx = 0; $("series").dataset.touched = ""; $("series").value = "Roll"; loadRoll(); toast("Roll cleared.");
+  clearTimeout(metaTimer);
+  loadSamples(); state.viewIdx = 0; setSeries("Roll", false); hist.length = 0; paintUndo(); rollOK = true; loadRoll();
+  idb.clear().then(() => toast("Roll cleared."), () => toast("Roll cleared here, but this device could not forget it."));
 });
 
 /* ---------- gear & looks ---------- */
 $("mju").addEventListener("click", () => {
+  remember();
   state.gear = { ...MJU };
-  state.look = JSON.parse(JSON.stringify(PRESETS.find(p => p.id === "portra400"))); state.lookId = "portra400"; state.strength = .8;
-  syncControls(); markLooks(); changed(); toast("Olympus mju II + Portra 400 loaded.");
+  state.look = JSON.parse(JSON.stringify(PRESETS.find(p => p.id === "portra400"))); state.lookId = "portra400"; lookBase = state.look; state.strength = .8;
+  syncControls(); markLooks(); changed(); toast("Compact camera + Portra 400 loaded.");
 });
 $("learn").addEventListener("click", () => {
   const set = real().length ? real() : state.photos;
@@ -834,11 +1078,13 @@ $("learn").addEventListener("click", () => {
     : `Across ${set.length} photos, your gear is neutral: nothing to compensate.`;
 });
 $("saveLook").addEventListener("click", () => {
-  const n = state.savedLooks.length + 1, id = "mine-" + Date.now();
+  const n = state.savedLooks.reduce((a, l) => Math.max(a, +(/^My look (\d+)$/.exec(l.name)?.[1] || 0)), 0) + 1, id = "mine-" + Date.now();
   state.savedLooks.push({ ...JSON.parse(JSON.stringify(state.look)), art: false, id, name: "My look " + n, desc: "Your saved look." });
-  state.lookId = id; buildLooks(); persist(); toast(`“My look ${n}” added to Looks.`);
+  state.lookId = id; lookBase = state.look; buildLooks(); persist();
+  toast(`“My look ${n}” added to Looks.`, { action: { label: "Rename", fn: () => { setTab("looks"); $("mineName").focus(); $("mineName").select(); } } });
 });
 $("modeSeg").addEventListener("click", e => { const m = e.target.closest("button")?.dataset.mode; if (m) { state.exportMode = m; paintMode(); persist(); } });
+if (isPhone) { $("modeSeg").hidden = true; $("modeHint").hidden = true; } // phones always share photo by photo
 
 /* ---------- save ---------- */
 async function saveBlob(name, blob) {
@@ -858,7 +1104,11 @@ let busy = false, queue = null;
 async function exportSeries() {
   if (busy) return;
   const list = saveable();
-  if (!list.length) { toast("Import your photos first: the samples are not saved."); return; }
+  if (!list.length) {
+    if (!real().length) toast("These are samples. Import your photos to save a roll.", { action: { label: "Import photos", fn: () => $("pick").click() } });
+    else toast("Every frame is set to skip. Untick “Skip when saving” in This photo.");
+    return;
+  }
   busy = true;
   try {
     const files = [];
@@ -927,7 +1177,13 @@ try { apply(JSON.parse(localStorage.getItem(KEY) || "null")); } catch (e) {}
 $("sync").textContent = "Settings kept on this device";
 
 /* ---------- boot ---------- */
-buildControls(); syncControls(); loadSamples(); buildLooks(); loadRoll();
+lookBase = allLooks().find(l => l.id === state.lookId) || JSON.parse(JSON.stringify(state.look));
+buildControls(); syncControls(); loadSamples(); buildLooks(); loadRoll(); paintUndo();
+(async () => {
+  if (!(await restoreRoll())) return;
+  loadRoll(); paintLooks();
+  try { navigator.storage?.persist?.(); } catch (e) {}
+})();
 
 (async () => {
   try {
